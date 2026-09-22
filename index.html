@@ -144,6 +144,21 @@
                         Asistiré
                     </button>
                 </div>
+
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
+                    <div class="bg-orange-100 text-orange-600 rounded-xl p-3 text-center shrink-0 w-14">
+                        <span class="block text-xs font-bold uppercase">SAB</span>
+                        <span class="block text-lg font-black">12</span>
+                    </div>
+                    <div class="flex-1">
+                        <span class="text-[10px] bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded-full font-semibold">Cultura</span>
+                        <h3 class="text-sm font-bold text-gray-800 mt-1">Festival de Teatro Urbano</h3>
+                        <p class="text-xs text-gray-500 mt-0.5">Teatro Municipal • 18:30 hrs</p>
+                    </div>
+                    <button onclick="alert('¡Asistencia confirmada a la agenda! Te notificaremos antes del evento.')" class="px-3 py-2 bg-gray-100 hover:bg-orange-50 text-gray-700 hover:text-orange-600 rounded-lg text-xs font-bold transition">
+                        Asistiré
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -155,7 +170,6 @@
             </div>
             
             <div id="matches-list" class="space-y-3">
-                <!-- Se llena dinámicamente o muestra mensaje vacío -->
                 <div id="empty-matches" class="text-center py-12 text-gray-400">
                     <i class="fa-solid fa-heart-crack text-4xl mb-2"></i>
                     <p class="text-sm">Aún no tienes favoritos. ¡Explora el feed y haz match con lo que te guste!</p>
@@ -246,7 +260,7 @@
                 title: "The Retro Burger Bar",
                 category: "Gastronomía",
                 distance: "📍 a 0.8 km",
-                desc: "Disfruta la mejor hamburguesa artesanal este fin de semana con 20% de descuento.",
+                desc: "Disfruta la mejor hamburguesa artesanal este fin de semana con 20% de descuento mostrando Gnews.",
                 image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600",
                 whatsapp: "https://whatsapp.com",
                 instagram: "https://instagram.com"
@@ -266,6 +280,33 @@
                 distance: "📍 a 2.5 km",
                 desc: "Clases funcionales y evaluación física gratuita para nuevos socios este mes.",
                 image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=600",
+                whatsapp: "https://whatsapp.com",
+                instagram: "https://instagram.com"
+            },
+            {
+                title: "Estudio Jurídico & Asesoría Legal",
+                category: "Servicios Profesionales",
+                distance: "📍 a 1.5 km",
+                desc: "Primera consulta legal gratuita en materias civiles y comerciales. Agenda tu hora directo.",
+                image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=600",
+                whatsapp: "https://whatsapp.com",
+                instagram: "https://instagram.com"
+            },
+            {
+                title: "Barber Shop & Shaving Studio",
+                category: "Comercio y Tiendas",
+                distance: "📍 a 0.5 km",
+                desc: "Corte de cabello clásico, perfilado de barba y cortesía de café de grano para clientes Gnews.",
+                image: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=600",
+                whatsapp: "https://whatsapp.com",
+                instagram: "https://instagram.com"
+            },
+            {
+                title: "Flower Moon Nursery & Jardín",
+                category: "Comercio y Tiendas",
+                distance: "📍 a 3.1 km",
+                desc: "Especialistas en plantas ornamentales, asesoría de paisajismo y abono orgánico.",
+                image: "https://images.unsplash.com/photo-1463936575829-25148e1db1b8?auto=format&fit=crop&q=80&w=600",
                 whatsapp: "https://whatsapp.com",
                 instagram: "https://instagram.com"
             }
@@ -291,7 +332,6 @@
             const card = document.getElementById('card');
             
             if (action === 'match') {
-                // Guardar en favoritos si da like
                 const currentItem = mockData[currentIndex];
                 if (!favorites.some(fav => fav.title === currentItem.title)) {
                     favorites.push(currentItem);
@@ -363,6 +403,9 @@
 
                     L.marker([-33.4440, -70.6750]).addTo(mapInstance)
                         .bindPopup('<b>Concierto Jazz al Aire Libre</b><br>🎵 Sábado 19:00 hrs');
+
+                    L.marker([-33.4560, -70.6800]).addTo(mapInstance)
+                        .bindPopup('<b>Estudio Jurídico</b><br>⚖️ Asesoría Legal');
 
                     mapInitialized = true;
                 }, 200);
