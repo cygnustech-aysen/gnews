@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gnews - Geolocalización y Publicidad Interactiva</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome para íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS para el Mapa GPS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        .view-section { display: none; }
+        .view-section.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+        #map { width: 100%; height: 100%; z-index: 1; }
+    </style>
+</head>
+<body class="bg-gray-100 flex justify-center items-center h-screen m-0 font-sans">
+
+    <!-- Contenedor Principal tipo Smartphone -->
+    <div class="w-full max-w-md h-full md:h-[850px] md:rounded-3xl bg-white shadow-2xl flex flex-col overflow-hidden relative border border-gray-200">
+        
+        <!-- HEADER -->
+        <header class="bg-white border-b border-gray-100 px-6 py-4 flex justify-between items-center z-10 shrink-0">
+            <div class="flex items-center">
+                <span class="text-2xl font-black tracking-tighter" style="color: #f37021;">G<span class="text-gray-700">NEWS</span></span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span class="text-xs bg-orange-50 text-orange-600 px-2.5 py-1 rounded-full font-medium flex items-center">
+                    <i class="fa-solid fa-location-dot mr-1"></i> GPS Activo
+                </span>
+            </div>
+        </header>
+
+        <!-- ==================== VISTA 1: EXPLORAR / FEED TINDER ==================== -->
+        <div id="view-explore" class="view-section active bg-gray-50 p-4 items-center justify-center">
+            <div id="card" class="w-full h-full max-h-[550px] bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col relative border border-gray-200 transition-all duration-300">
+                <div class="relative h-3/5 w-full bg-gray-200">
+                    <img id="card-image" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600" alt="Servicio" class="w-full h-full object-cover">
+                    <span id="card-category" class="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-semibold uppercase tracking-wider">
+                        Gastronomía
+                    </span>
+                    <span id="card-distance" class="absolute top-4 right-4 bg-white/90 backdrop-blur-md text-gray-800 text-xs px-3 py-1.5 rounded-full font-bold shadow-sm">
+                        📍 a 0.8 km
+                    </span>
+                </div>
+
+                <div class="p-5 flex-1 flex flex-col justify-between bg-white">
+                    <div>
+                        <h2 id="card-title" class="text-xl font-bold text-gray-900 leading-tight">The Retro Burger Bar</h2>
+                        <p id="card-desc" class="text-gray-600 text-sm mt-1.5 line-clamp-2">
+                            Disfruta la mejor hamburguesa artesanal este fin de semana con 20% de descuento mostrando Gnews.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-3 border-t border-gray-100 mt-2">
+                        <a id="card-whatsapp" href="https://whatsapp.com" target="_blank" class="text-green-600 hover:text-green-700 text-sm font-semibold flex items-center">
+                            <i class="fa-brands fa-whatsapp text-lg mr-1.5"></i> WhatsApp
+                        </a>
+                        <a id="card-instagram" href="https://instagram.com" target="_blank" class="text-pink-600 hover:text-pink-700 text-sm font-semibold flex items-center">
+                            <i class="fa-brands fa-instagram text-lg mr-1.5"></i> Instagram
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acción (Match / Swipe) -->
+            <div class="flex items-center justify-center space-x-6 mt-4 z-10 shrink-0">
+                <button onclick="nextCard('reject')" class="w-14 h-14 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center text-gray-400 hover:text-orange-500 hover:border-orange-200 transition active:scale-95 cursor-pointer">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+                <button onclick="nextCard('match')" class="w-16 h-16 rounded-full shadow-lg shadow-orange-500/30 flex items-center justify-center text-white transition active:scale-95 cursor-pointer" style="background-color: #f37021;">
+                    <i class="fa-solid fa-heart text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== VISTA 2: MAPA GPS ==================== -->
+        <div id="view-map" class="view-section bg-gray-50 relative">
+            <div id="map"></div>
+            <div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-3 rounded-xl shadow-lg z-[1000] border border-gray-200 flex items-center justify-between">
+                <div>
+                    <h4 class="text-xs font-bold text-gray-800 uppercase">Ubicación Actual</h4>
+                    <p class="text-xs text-gray-500">Mostrando servicios y eventos a < 3 km</p>
+                </div>
+                <button onclick="alert('Buscando servicios cercanos en radio GPS...')" class="px-3 py-1.5 rounded-lg text-white text-xs font-bold" style="background-color: #f37021;">
+                    Actualizar
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== VISTA 3: AGENDA ==================== -->
+        <div id="view-agenda" class="view-section bg-gray-50 p-6 overflow-y-auto">
+            <div class="mb-4">
+                <h2 class="text-xl font-bold text-gray-900">Agenda Cultural y Comercial</h2>
+                <p class="text-xs text-gray-500 mt-0.5">Eventos presentes y futuros en tu región.</p>
+            </div>
+            
+            <div class="space-y-3">
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
+                    <div class="bg-orange-100 text-orange-600 rounded-xl p-3 text-center shrink-0 w-14">
+                        <span class="block text-xs font-bold uppercase">SAB</span>
+                        <span class="block text-lg font-black">28</span>
+                    </div>
+                    <div class="flex-1">
+                        <span class="text-[10px] bg-red-50 text-red-600 px-2 py-0.5 rounded-full font-semibold">Música en Vivo</span>
+                        <h3 class="text-sm font-bold text-gray-800 mt-1">Concierto Jazz al Aire Libre</h3>
+                        <p class="text-xs text-gray-500 mt-0.5">Plaza Principal • 19:00 hrs</p>
+                    </div>
+                    <button onclick="alert('¡Asistencia confirmada a la agenda! Te notificaremos antes del evento.')" class="px-3 py-2 bg-gray-100 hover:bg-orange-50 text-gray-700 hover:text-orange-600 rounded-lg text-xs font-bold transition">
+                        Asistiré
+                    </button>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
+                    <div class="bg-orange-100 text-orange-600 rounded-xl p-3 text-center shrink-0 w-14">
+                        <span class="block text-xs font-bold uppercase">DOM</span>
+                        <span class="block text-lg font-black">29</span>
+                    </div>
+                    <div class="flex-1">
+                        <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-semibold">Gastronomía</span>
+                        <h3 class="text-sm font-bold text-gray-800 mt-1">Feria de Sabores Artesanales</h3>
+                        <p class="text-xs text-gray-500 mt-0.5">Parque Costanera • 12:00 hrs</p>
+                    </div>
+                    <button onclick="alert('¡Asistencia confirmada a la agenda! Te notificaremos antes del evento.')" class="px-3 py-2 bg-gray-100 hover:bg-orange-50 text-gray-700 hover:text-orange-600 rounded-lg text-xs font-bold transition">
+                        Asistiré
+                    </button>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
+                    <div class="bg-orange-100 text-orange-600 rounded-xl p-3 text-center shrink-0 w-14">
+                        <span class="block text-xs font-bold uppercase">VIE</span>
+                        <span class="block text-lg font-black">04</span>
+                    </div>
+                    <div class="flex-1">
+                        <span class="text-[10px] bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full font-semibold">Salud y Deporte</span>
+                        <h3 class="text-sm font-bold text-gray-800 mt-1">Maratón Regional 5K</h3>
+                        <p class="text-xs text-gray-500 mt-0.5">Av. Principal • 08:00 hrs</p>
+                    </div>
+                    <button onclick="alert('¡Asistencia confirmada a la agenda! Te notificaremos antes del evento.')" class="px-3 py-2 bg-gray-100 hover:bg-orange-50 text-gray-700 hover:text-orange-600 rounded-lg text-xs font-bold transition">
+                        Asistiré
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== NAVBAR INFERIOR ==================== -->
+        <nav class="bg-white border-t border-gray-100 py-3 px-6 flex justify-around items-center text-gray-400 shrink-0 z-20">
+            <button onclick="switchView('explore')" id="nav-explore" class="flex flex-col items-center transition cursor-pointer" style="color: #f37021;">
+                <i class="fa-solid fa-fire text-xl"></i>
+                <span class="text-[10px] mt-1 font-medium">Explorar</span>
+            </button>
+            <button onclick="switchView('map')" id="nav-map" class="hover:text-gray-600 flex flex-col items-center transition cursor-pointer">
+                <i class="fa-solid fa-map text-xl"></i>
+                <span class="text-[10px] mt-1 font-medium">Mapa GPS</span>
+            </button>
+            <button onclick="switchView('agenda')" id="nav-agenda" class="hover:text-gray-600 flex flex-col items-center transition cursor-pointer">
+                <i class="fa-solid fa-calendar-days text-xl"></i>
+                <span class="text-[10px] mt-1 font-medium">Agenda</span>
+            </button>
+            <a href="creator.html" class="hover:text-gray-600 flex flex-col items-center transition">
+                <i class="fa-solid fa-circle-plus text-xl"></i>
+                <span class="text-[10px] mt-1 font-medium">Crear</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Script de Funcionalidad y Navegación -->
+    <script>
+        const mockData = [
+            {
+                title: "The Retro Burger Bar",
+                category: "Gastronomía",
+                distance: "📍 a 0.8 km",
+                desc: "Disfruta la mejor hamburguesa artesanal este fin de semana con 20% de descuento.",
+                image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600"
+            },
+            {
+                title: "Concierto Jazz al Aire Libre",
+                category: "Eventos Culturales",
+                distance: "📍 a 1.2 km",
+                desc: "Música en vivo este sábado en la plaza principal. Entrada liberada con tu registro.",
+                image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=600"
+            },
+            {
+                title: "Dynamic Gym & Personal Trainer",
+                category: "Salud y Deporte",
+                distance: "📍 a 2.5 km",
+                desc: "Clases funcionales y evaluación física gratuita para nuevos socios este mes.",
+                image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=600"
+            }
+        ];
+
+        let currentIndex = 0;
+        let mapInitialized = false;
+        let mapInstance = null;
+
+        function nextCard(action) {
+            const card = document.getElementById('card');
+            card.style.transform = action === 'match' ? 'translateX(100px) rotate(15deg)' : 'translateX(-100px) rotate(-15deg)';
+            card.style.opacity = '0';
+
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % mockData.length;
+                const item = mockData[currentIndex];
+
+                document.getElementById('card-title').innerText = item.title;
+                document.getElementById('card-category').innerText = item.category;
+                document.getElementById('card-distance').innerText = item.distance;
+                document.getElementById('card-desc').innerText = item.desc;
+                document.getElementById('card-image').src = item.image;
+
+                card.style.transform = 'translateX(0) rotate(0)';
+                card.style.opacity = '1';
+            }, 200);
+        }
+
+        function switchView(viewName) {
+            // Ocultar todas las vistas
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            // Apagar colores de iconos en navbar
+            ['explore', 'map', 'agenda'].forEach(v => {
+                document.getElementById('nav-' + v).style.color = '#9ca3af';
+            });
+
+            // Activar la seleccionada
+            document.getElementById('view-' + viewName).classList.add('active');
+            document.getElementById('nav-' + viewName).style.color = '#f37021';
+
+            // Si es la vista de mapa, inicializar Leaflet una sola vez
+            if (viewName === 'map' && !mapInitialized) {
+                setTimeout(() => {
+                    mapInstance = L.map('map').setView([-33.4489, -70.6693], 14); // Coordenadas de ejemplo
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '&copy; OpenStreetMap'
+                    }).addTo(mapInstance);
+
+                    // Marcador de usuario
+                    L.marker([-33.4489, -70.6693]).addTo(mapInstance)
+                        .bindPopup('<b>Tu Ubicación GPS</b>').openPopup();
+
+                    // Marcador de negocio cercano 1
+                    L.marker([-33.4520, -70.6600]).addTo(mapInstance)
+                        .bindPopup('<b>The Retro Burger Bar</b><br>🍔 Abierto • 0.8 km');
+
+                    // Marcador de evento cercano 2
+                    L.marker([-33.4440, -70.6750]).addTo(mapInstance)
+                        .bindPopup('<b>Concierto Jazz al Aire Libre</b><br>🎵 Sábado 19:00 hrs');
+
+                    mapInitialized = true;
+                }, 200);
+            } else if (viewName === 'map' && mapInitialized) {
+                setTimeout(() => { mapInstance.invalidateSize(); }, 150);
+            }
+        }
+    </script>
+
+</body>
+</html>
