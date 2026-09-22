@@ -37,7 +37,7 @@
 
         <!-- ==================== VISTA 1: EXPLORAR / FEED TINDER ==================== -->
         <div id="view-explore" class="view-section active bg-gray-50 p-4 items-center justify-center">
-            <div id="card" class="w-full h-full max-h-[550px] bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col relative border border-gray-200 transition-all duration-300">
+            <div id="card" class="w-full h-full max-h-[530px] bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col relative border border-gray-200 transition-all duration-300">
                 <div class="relative h-3/5 w-full bg-gray-200">
                     <img id="card-image" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600" alt="Servicio" class="w-full h-full object-cover">
                     <span id="card-category" class="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-semibold uppercase tracking-wider">
@@ -68,12 +68,12 @@
             </div>
 
             <!-- Botones de Acción (Match / Swipe) -->
-            <div class="flex items-center justify-center space-x-6 mt-4 z-10 shrink-0">
-                <button onclick="nextCard('reject')" class="w-14 h-14 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center text-gray-400 hover:text-orange-500 hover:border-orange-200 transition active:scale-95 cursor-pointer">
-                    <i class="fa-solid fa-xmark text-2xl"></i>
+            <div class="flex items-center justify-center space-x-6 mt-3 z-10 shrink-0">
+                <button onclick="nextCard('reject')" class="w-12 h-12 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center text-gray-400 hover:text-orange-500 hover:border-orange-200 transition active:scale-95 cursor-pointer">
+                    <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
-                <button onclick="nextCard('match')" class="w-16 h-16 rounded-full shadow-lg shadow-orange-500/30 flex items-center justify-center text-white transition active:scale-95 cursor-pointer" style="background-color: #f37021;">
-                    <i class="fa-solid fa-heart text-2xl"></i>
+                <button onclick="nextCard('match')" class="w-14 h-14 rounded-full shadow-lg shadow-orange-500/30 flex items-center justify-center text-white transition active:scale-95 cursor-pointer" style="background-color: #f37021;">
+                    <i class="fa-solid fa-heart text-xl"></i>
                 </button>
             </div>
         </div>
@@ -147,6 +147,57 @@
             </div>
         </div>
 
+        <!-- ==================== VISTA 4: CREAR (Formulario Creador) ==================== -->
+        <div id="view-create" class="view-section bg-gray-50 p-6 overflow-y-auto">
+            <div class="mb-4">
+                <h2 class="text-xl font-bold text-gray-900">Nuevo Anuncio o Evento</h2>
+                <p class="text-xs text-gray-500 mt-0.5">Sube tu servicio para mostrarlo en el mapa interactivo.</p>
+            </div>
+
+            <form onsubmit="handleCreatorSubmit(event)" class="space-y-3.5 pb-4">
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Título del Negocio o Evento</label>
+                    <input type="text" required placeholder="Ej: Bar The Retro" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Categoría</label>
+                    <select class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
+                        <option>Gastronomía</option>
+                        <option>Eventos Culturales y Musicales</option>
+                        <option>Servicios Profesionales</option>
+                        <option>Salud y Deporte</option>
+                        <option>Comercio y Tiendas</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Descripción corta u Oferta</label>
+                    <textarea rows="2" required placeholder="Cuéntale a la comunidad qué ofreces..." class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">URL de la Imagen o Afiche</label>
+                    <input type="url" required placeholder="https://ejemplo.com/imagen.jpg" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">WhatsApp</label>
+                        <input type="text" placeholder="+569..." class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Instagram</label>
+                        <input type="text" placeholder="@usuario" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 rounded-xl text-white font-bold text-sm shadow-lg shadow-orange-500/25 transition active:scale-95 mt-2 cursor-pointer" style="background-color: #f37021;">
+                    Publicar en Gnews
+                </button>
+            </form>
+        </div>
+
         <!-- ==================== NAVBAR INFERIOR ==================== -->
         <nav class="bg-white border-t border-gray-100 py-3 px-6 flex justify-around items-center text-gray-400 shrink-0 z-20">
             <button onclick="switchView('explore')" id="nav-explore" class="flex flex-col items-center transition cursor-pointer" style="color: #f37021;">
@@ -161,10 +212,10 @@
                 <i class="fa-solid fa-calendar-days text-xl"></i>
                 <span class="text-[10px] mt-1 font-medium">Agenda</span>
             </button>
-            <a href="creator.html" class="hover:text-gray-600 flex flex-col items-center transition">
+            <button onclick="switchView('create')" id="nav-create" class="hover:text-gray-600 flex flex-col items-center transition cursor-pointer">
                 <i class="fa-solid fa-circle-plus text-xl"></i>
                 <span class="text-[10px] mt-1 font-medium">Crear</span>
-            </a>
+            </button>
         </nav>
     </div>
 
@@ -222,7 +273,7 @@
             // Ocultar todas las vistas
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             // Apagar colores de iconos en navbar
-            ['explore', 'map', 'agenda'].forEach(v => {
+            ['explore', 'map', 'agenda', 'create'].forEach(v => {
                 document.getElementById('nav-' + v).style.color = '#9ca3af';
             });
 
@@ -233,21 +284,18 @@
             // Si es la vista de mapa, inicializar Leaflet una sola vez
             if (viewName === 'map' && !mapInitialized) {
                 setTimeout(() => {
-                    mapInstance = L.map('map').setView([-33.4489, -70.6693], 14); // Coordenadas de ejemplo
+                    mapInstance = L.map('map').setView([-33.4489, -70.6693], 14);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         maxZoom: 19,
                         attribution: '&copy; OpenStreetMap'
                     }).addTo(mapInstance);
 
-                    // Marcador de usuario
                     L.marker([-33.4489, -70.6693]).addTo(mapInstance)
                         .bindPopup('<b>Tu Ubicación GPS</b>').openPopup();
 
-                    // Marcador de negocio cercano 1
                     L.marker([-33.4520, -70.6600]).addTo(mapInstance)
                         .bindPopup('<b>The Retro Burger Bar</b><br>🍔 Abierto • 0.8 km');
 
-                    // Marcador de evento cercano 2
                     L.marker([-33.4440, -70.6750]).addTo(mapInstance)
                         .bindPopup('<b>Concierto Jazz al Aire Libre</b><br>🎵 Sábado 19:00 hrs');
 
@@ -257,7 +305,13 @@
                 setTimeout(() => { mapInstance.invalidateSize(); }, 150);
             }
         }
-    </script>
 
+        function handleCreatorSubmit(event) {
+            event.preventDefault();
+            alert('¡Anuncio registrado con éxito en Gnews! Ya se encuentra disponible en el sistema.');
+            event.target.reset();
+            switchView('explore');
+        }
+    </script>
 </body>
 </html>
