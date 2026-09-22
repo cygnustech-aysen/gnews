@@ -147,7 +147,23 @@
             </div>
         </div>
 
-        <!-- ==================== VISTA 4: CREAR (Formulario Creador) ==================== -->
+        <!-- ==================== VISTA 4: FAVORITOS / MATCHES ==================== -->
+        <div id="view-matches" class="view-section bg-gray-50 p-6 overflow-y-auto">
+            <div class="mb-4">
+                <h2 class="text-xl font-bold text-gray-900">Mis Favoritos (Matches)</h2>
+                <p class="text-xs text-gray-500 mt-0.5">Servicios y eventos a los que les diste Me Gusta ❤️</p>
+            </div>
+            
+            <div id="matches-list" class="space-y-3">
+                <!-- Se llena dinámicamente o muestra mensaje vacío -->
+                <div id="empty-matches" class="text-center py-12 text-gray-400">
+                    <i class="fa-solid fa-heart-crack text-4xl mb-2"></i>
+                    <p class="text-sm">Aún no tienes favoritos. ¡Explora el feed y haz match con lo que te guste!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== VISTA 5: CREAR (Formulario Creador) ==================== -->
         <div id="view-create" class="view-section bg-gray-50 p-6 overflow-y-auto">
             <div class="mb-4">
                 <h2 class="text-xl font-bold text-gray-900">Nuevo Anuncio o Evento</h2>
@@ -157,12 +173,12 @@
             <form onsubmit="handleCreatorSubmit(event)" class="space-y-3.5 pb-4">
                 <div>
                     <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Título del Negocio o Evento</label>
-                    <input type="text" required placeholder="Ej: Bar The Retro" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
+                    <input type="text" id="new-title" required placeholder="Ej: Bar The Retro" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
                 </div>
 
                 <div>
                     <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Categoría</label>
-                    <select class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
+                    <select id="new-category" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
                         <option>Gastronomía</option>
                         <option>Eventos Culturales y Musicales</option>
                         <option>Servicios Profesionales</option>
@@ -173,22 +189,22 @@
 
                 <div>
                     <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Descripción corta u Oferta</label>
-                    <textarea rows="2" required placeholder="Cuéntale a la comunidad qué ofreces..." class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500"></textarea>
+                    <textarea id="new-desc" rows="2" required placeholder="Cuéntale a la comunidad qué ofreces..." class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500"></textarea>
                 </div>
 
                 <div>
                     <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">URL de la Imagen o Afiche</label>
-                    <input type="url" required placeholder="https://ejemplo.com/imagen.jpg" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
+                    <input type="url" id="new-image" required placeholder="https://ejemplo.com/imagen.jpg" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">WhatsApp</label>
-                        <input type="text" placeholder="+569..." class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
+                        <input type="text" id="new-wa" placeholder="+569..." class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Instagram</label>
-                        <input type="text" placeholder="@usuario" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
+                        <input type="text" id="new-ig" placeholder="@usuario" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
                     </div>
                 </div>
 
@@ -199,89 +215,138 @@
         </div>
 
         <!-- ==================== NAVBAR INFERIOR ==================== -->
-        <nav class="bg-white border-t border-gray-100 py-3 px-6 flex justify-around items-center text-gray-400 shrink-0 z-20">
+        <nav class="bg-white border-t border-gray-100 py-3 px-4 flex justify-around items-center text-gray-400 shrink-0 z-20">
             <button onclick="switchView('explore')" id="nav-explore" class="flex flex-col items-center transition cursor-pointer" style="color: #f37021;">
-                <i class="fa-solid fa-fire text-xl"></i>
-                <span class="text-[10px] mt-1 font-medium">Explorar</span>
+                <i class="fa-solid fa-fire text-lg"></i>
+                <span class="text-[9px] mt-1 font-medium">Explorar</span>
             </button>
             <button onclick="switchView('map')" id="nav-map" class="hover:text-gray-600 flex flex-col items-center transition cursor-pointer">
-                <i class="fa-solid fa-map text-xl"></i>
-                <span class="text-[10px] mt-1 font-medium">Mapa GPS</span>
+                <i class="fa-solid fa-map text-lg"></i>
+                <span class="text-[9px] mt-1 font-medium">Mapa</span>
             </button>
             <button onclick="switchView('agenda')" id="nav-agenda" class="hover:text-gray-600 flex flex-col items-center transition cursor-pointer">
-                <i class="fa-solid fa-calendar-days text-xl"></i>
-                <span class="text-[10px] mt-1 font-medium">Agenda</span>
+                <i class="fa-solid fa-calendar-days text-lg"></i>
+                <span class="text-[9px] mt-1 font-medium">Agenda</span>
+            </button>
+            <button onclick="switchView('matches')" id="nav-matches" class="hover:text-gray-600 flex flex-col items-center transition cursor-pointer">
+                <i class="fa-solid fa-heart text-lg"></i>
+                <span class="text-[9px] mt-1 font-medium">Favoritos</span>
             </button>
             <button onclick="switchView('create')" id="nav-create" class="hover:text-gray-600 flex flex-col items-center transition cursor-pointer">
-                <i class="fa-solid fa-circle-plus text-xl"></i>
-                <span class="text-[10px] mt-1 font-medium">Crear</span>
+                <i class="fa-solid fa-circle-plus text-lg"></i>
+                <span class="text-[9px] mt-1 font-medium">Crear</span>
             </button>
         </nav>
     </div>
 
     <!-- Script de Funcionalidad y Navegación -->
     <script>
-        const mockData = [
+        let mockData = [
             {
                 title: "The Retro Burger Bar",
                 category: "Gastronomía",
                 distance: "📍 a 0.8 km",
                 desc: "Disfruta la mejor hamburguesa artesanal este fin de semana con 20% de descuento.",
-                image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600"
+                image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600",
+                whatsapp: "https://whatsapp.com",
+                instagram: "https://instagram.com"
             },
             {
                 title: "Concierto Jazz al Aire Libre",
                 category: "Eventos Culturales",
                 distance: "📍 a 1.2 km",
                 desc: "Música en vivo este sábado en la plaza principal. Entrada liberada con tu registro.",
-                image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=600"
+                image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=600",
+                whatsapp: "https://whatsapp.com",
+                instagram: "https://instagram.com"
             },
             {
                 title: "Dynamic Gym & Personal Trainer",
                 category: "Salud y Deporte",
                 distance: "📍 a 2.5 km",
                 desc: "Clases funcionales y evaluación física gratuita para nuevos socios este mes.",
-                image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=600"
+                image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=600",
+                whatsapp: "https://whatsapp.com",
+                instagram: "https://instagram.com"
             }
         ];
 
+        let favorites = [];
         let currentIndex = 0;
         let mapInitialized = false;
         let mapInstance = null;
 
+        function updateCardDisplay() {
+            const item = mockData[currentIndex];
+            document.getElementById('card-title').innerText = item.title;
+            document.getElementById('card-category').innerText = item.category;
+            document.getElementById('card-distance').innerText = item.distance;
+            document.getElementById('card-desc').innerText = item.desc;
+            document.getElementById('card-image').src = item.image;
+            document.getElementById('card-whatsapp').href = item.whatsapp || 'https://whatsapp.com';
+            document.getElementById('card-instagram').href = item.instagram || 'https://instagram.com';
+        }
+
         function nextCard(action) {
             const card = document.getElementById('card');
-            card.style.transform = action === 'match' ? 'translateX(100px) rotate(15deg)' : 'translateX(-100px) rotate(-15deg)';
+            
+            if (action === 'match') {
+                // Guardar en favoritos si da like
+                const currentItem = mockData[currentIndex];
+                if (!favorites.some(fav => fav.title === currentItem.title)) {
+                    favorites.push(currentItem);
+                    renderFavorites();
+                }
+                card.style.transform = 'translateX(100px) rotate(15deg)';
+            } else {
+                card.style.transform = 'translateX(-100px) rotate(-15deg)';
+            }
             card.style.opacity = '0';
 
             setTimeout(() => {
                 currentIndex = (currentIndex + 1) % mockData.length;
-                const item = mockData[currentIndex];
-
-                document.getElementById('card-title').innerText = item.title;
-                document.getElementById('card-category').innerText = item.category;
-                document.getElementById('card-distance').innerText = item.distance;
-                document.getElementById('card-desc').innerText = item.desc;
-                document.getElementById('card-image').src = item.image;
-
+                updateCardDisplay();
                 card.style.transform = 'translateX(0) rotate(0)';
                 card.style.opacity = '1';
             }, 200);
         }
 
+        function renderFavorites() {
+            const listContainer = document.getElementById('matches-list');
+            if (favorites.length === 0) {
+                listContainer.innerHTML = `
+                    <div id="empty-matches" class="text-center py-12 text-gray-400">
+                        <i class="fa-solid fa-heart-crack text-4xl mb-2"></i>
+                        <p class="text-sm">Aún no tienes favoritos. ¡Explora el feed y haz match con lo que te guste!</p>
+                    </div>`;
+                return;
+            }
+
+            listContainer.innerHTML = favorites.map(item => `
+                <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm flex gap-3 items-center">
+                    <img src="${item.image}" class="w-16 h-16 rounded-lg object-cover shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <span class="text-[9px] bg-orange-50 text-orange-600 px-2 py-0.5 rounded-full font-semibold">${item.category}</span>
+                        <h4 class="text-sm font-bold text-gray-800 truncate mt-1">${item.title}</h4>
+                        <p class="text-xs text-gray-500 truncate">${item.desc}</p>
+                    </div>
+                    <div class="flex flex-col gap-1 shrink-0">
+                        <a href="${item.whatsapp || '#'}" target="_blank" class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-xs hover:bg-green-100 transition"><i class="fa-brands fa-whatsapp"></i></a>
+                        <a href="${item.instagram || '#'}" target="_blank" class="w-8 h-8 rounded-full bg-pink-50 text-pink-600 flex items-center justify-center text-xs hover:bg-pink-100 transition"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         function switchView(viewName) {
-            // Ocultar todas las vistas
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            // Apagar colores de iconos en navbar
-            ['explore', 'map', 'agenda', 'create'].forEach(v => {
+            ['explore', 'map', 'agenda', 'matches', 'create'].forEach(v => {
                 document.getElementById('nav-' + v).style.color = '#9ca3af';
             });
 
-            // Activar la seleccionada
             document.getElementById('view-' + viewName).classList.add('active');
             document.getElementById('nav-' + viewName).style.color = '#f37021';
 
-            // Si es la vista de mapa, inicializar Leaflet una sola vez
             if (viewName === 'map' && !mapInitialized) {
                 setTimeout(() => {
                     mapInstance = L.map('map').setView([-33.4489, -70.6693], 14);
@@ -308,10 +373,28 @@
 
         function handleCreatorSubmit(event) {
             event.preventDefault();
-            alert('¡Anuncio registrado con éxito en Gnews! Ya se encuentra disponible en el sistema.');
+            
+            const newAd = {
+                title: document.getElementById('new-title').value,
+                category: document.getElementById('new-category').value,
+                distance: "📍 a 0.3 km",
+                desc: document.getElementById('new-desc').value,
+                image: document.getElementById('new-image').value,
+                whatsapp: "https://whatsapp.com",
+                instagram: "https://instagram.com"
+            };
+
+            mockData.unshift(newAd);
+            currentIndex = 0;
+            updateCardDisplay();
+
+            alert('¡Anuncio registrado con éxito! Ya aparece en la primera posición del feed de exploración.');
             event.target.reset();
             switchView('explore');
         }
+
+        // Inicializar
+        updateCardDisplay();
     </script>
 </body>
 </html>
