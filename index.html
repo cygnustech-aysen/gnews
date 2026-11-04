@@ -37,7 +37,16 @@
 
         <!-- ==================== VISTA 1: EXPLORAR / FEED TINDER ==================== -->
         <div id="view-explore" class="view-section active bg-gray-50 p-4 items-center justify-center">
-            <div id="card" class="w-full h-full max-h-[530px] bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col relative border border-gray-200 transition-all duration-300">
+            
+            <!-- Barra de Búsqueda y Radio Offline -->
+            <div class="w-full mb-3 flex gap-2">
+                <input type="text" id="search-input" placeholder="Buscar localidad o servicio..." class="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-orange-500">
+                <button onclick="ejecutarBusquedaConRadio100km()" class="px-3.5 py-2 bg-orange-500 text-white rounded-xl text-xs font-bold shadow-sm hover:bg-orange-600 transition cursor-pointer">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+
+            <div id="card" class="w-full h-full max-h-[480px] bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col relative border border-gray-200 transition-all duration-300">
                 <div class="relative h-3/5 w-full bg-gray-200">
                     <img id="card-image" src="" alt="Servicio" class="w-full h-full object-cover">
                     <span id="card-category" class="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-semibold uppercase tracking-wider"></span>
@@ -82,29 +91,13 @@
             <div class="bg-blue-50 border border-blue-200 rounded-xl p-3.5 mb-4 flex items-start gap-3 shadow-sm">
                 <i class="fa-solid fa-satellite-dish text-blue-500 mt-1 text-lg"></i>
                 <div>
-                    <h4 class="text-xs font-bold text-blue-900">Navegación GPS sin Internet</h4>
-                    <p class="text-[10px] text-blue-700 mt-1 leading-relaxed">Descarga los tramos antes de viajar. Tu GPS te guiará y mostrará servicios locales y de emergencia sin cobertura.</p>
+                    <h4 class="text-xs font-bold text-blue-900">Algoritmo Offline-First Activo</h4>
+                    <p class="text-[10px] text-blue-700 mt-1 leading-relaxed">Cada búsqueda realizada precarga automáticamente un radio de 100 km en la memoria de tu teléfono para navegar sin internet.</p>
                 </div>
             </div>
 
-            <div class="space-y-3">
-                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-2 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
-                    <div class="pl-2">
-                        <span class="text-[9px] bg-green-50 text-green-600 px-2 py-0.5 rounded-full font-semibold"><i class="fa-solid fa-check mr-1"></i>Disponible Offline</span>
-                        <h3 class="text-sm font-bold text-gray-800 mt-1">Ruta 7 Norte (Cisnes - Puyuhuapi)</h3>
-                        <p class="text-[10px] text-gray-500 mt-0.5">Incluye 45 servicios locales y P.N. Queulat.</p>
-                    </div>
-                </div>
-
-                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center p-4">
-                    <div>
-                        <span class="text-[9px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-semibold">Requiere Descarga</span>
-                        <h3 class="text-sm font-bold text-gray-800 mt-1">Ruta 7 Centro (Aysén - Coyhaique)</h3>
-                        <p class="text-[10px] text-gray-500 mt-0.5">28 MB • Hospedajes y gastronomía.</p>
-                    </div>
-                    <button onclick="alert('¡Paquete descargado con éxito! Ya puedes navegar este tramo sin señal.')" class="w-10 h-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center hover:bg-orange-100 transition cursor-pointer shrink-0"><i class="fa-solid fa-cloud-arrow-down text-lg"></i></button>
-                </div>
+            <div id="offline-cache-list" class="space-y-3">
+                <!-- Se llena dinámicamente con lo que se guardó en la caché -->
             </div>
         </div>
 
@@ -114,9 +107,9 @@
             <div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-3 rounded-xl shadow-lg z-[1000] border border-gray-200 flex items-center justify-between">
                 <div>
                     <h4 class="text-xs font-bold text-gray-800 uppercase" id="gps-status">Conectando con GPS...</h4>
-                    <p class="text-xs text-gray-500" id="gps-coords">Obteniendo ubicación satelital</p>
+                    <p class="text-xs text-gray-500" id="gps-coords">Radio de búsqueda: 100 km a la redonda</p>
                 </div>
-                <button onclick="initRealGPS()" class="px-3 py-1.5 rounded-lg text-white text-xs font-bold cursor-pointer" style="background-color: #f37021;">Reintentar</button>
+                <button onclick="initRealGPSAndSync()" class="px-3 py-1.5 rounded-lg text-white text-xs font-bold cursor-pointer" style="background-color: #f37021;">Actualizar</button>
             </div>
         </div>
 
@@ -138,20 +131,7 @@
                         <h3 class="text-sm font-bold text-gray-800 mt-1">Concierto Jazz al Aire Libre</h3>
                         <p class="text-[10px] text-gray-500 mt-0.5">Plaza Principal • 19:00 hrs</p>
                     </div>
-                    <button onclick="alert('¡Asistencia confirmada! Te enviaremos un recordatorio.')" class="px-3 py-2 bg-gray-100 hover:bg-orange-50 text-gray-700 hover:text-orange-600 rounded-lg text-xs font-bold transition cursor-pointer">Asistiré</button>
-                </div>
-
-                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
-                    <div class="bg-orange-100 text-orange-600 rounded-xl p-3 text-center shrink-0 w-14">
-                        <span class="block text-xs font-bold uppercase">DOM</span>
-                        <span class="block text-lg font-black">29</span>
-                    </div>
-                    <div class="flex-1">
-                        <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-semibold">Gastronomía</span>
-                        <h3 class="text-sm font-bold text-gray-800 mt-1">Feria de Sabores Patagónicos</h3>
-                        <p class="text-[10px] text-gray-500 mt-0.5">Costanera • 12:00 hrs</p>
-                    </div>
-                    <button onclick="alert('¡Asistencia confirmada! Te enviaremos un recordatorio.')" class="px-3 py-2 bg-gray-100 hover:bg-orange-50 text-gray-700 hover:text-orange-600 rounded-lg text-xs font-bold transition cursor-pointer">Asistiré</button>
+                    <button onclick="alert('¡Asistencia confirmada!')" class="px-3 py-2 bg-gray-100 hover:bg-orange-50 text-gray-700 hover:text-orange-600 rounded-lg text-xs font-bold transition cursor-pointer">Asistiré</button>
                 </div>
             </div>
         </div>
@@ -180,7 +160,7 @@
 
             <form onsubmit="handleCreatorSubmit(event)" class="space-y-3.5 pb-4">
                 <div>
-                    <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Título del Negocio o Evento</label>
+                    <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Título del Negocio</label>
                     <input type="text" id="new-title" required placeholder="Ej: Cabañas Río Exploradores" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
                 </div>
                 <div>
@@ -189,15 +169,14 @@
                         <option>Turismo y Aventura</option>
                         <option>Gastronomía</option>
                         <option>Servicios Profesionales</option>
-                        <option>Eventos Culturales</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Descripción corta u Oferta</label>
+                    <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Descripción corta</label>
                     <textarea id="new-desc" rows="2" required placeholder="Cuéntale al turista qué ofreces..." class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500"></textarea>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">URL de la Imagen o Afiche</label>
+                    <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">URL de la Imagen</label>
                     <input type="url" id="new-image" required placeholder="https://images.unsplash.com/..." class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
                 </div>
                 <button type="submit" class="w-full py-3 rounded-xl text-white font-bold text-sm shadow-lg shadow-orange-500/25 transition active:scale-95 mt-2 cursor-pointer" style="background-color: #f37021;">
@@ -231,54 +210,110 @@
         </nav>
     </div>
 
-    <!-- Script con GPS Real y Conexión de Sensores -->
+    <!-- Script de Algoritmo Geo-espacial y Pre-caché 100km -->
     <script>
-        let mockData = [
-            {
-                title: "Cabañas & Domos Queulat",
-                category: "Turismo y Aventura",
-                distance: "📍 a 3.5 km",
-                desc: "Hospedaje inmerso en la Patagonia norte. Reserva directa y guía de senderos incluidos.",
-                image: "https://images.unsplash.com/photo-1587061949409-02df41d5e562?auto=format&fit=crop&q=80&w=600",
-                whatsapp: "https://whatsapp.com",
-                instagram: "https://instagram.com"
-            },
-            {
-                title: "The Retro Burger Bar",
-                category: "Gastronomía",
-                distance: "📍 a 0.8 km",
-                desc: "Disfruta la mejor hamburguesa artesanal en Puerto Cisnes con 20% dcto.",
-                image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600",
-                whatsapp: "https://whatsapp.com",
-                instagram: "https://instagram.com"
-            },
-            {
-                title: "Excursiones Náuticas Ventisquero",
-                category: "Turismo y Aventura",
-                distance: "📍 a 6.2 km",
-                desc: "Navegación guiada hacia el Glaciar Colgante. Salidas diarias sujetas a clima.",
-                image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=600",
-                whatsapp: "https://whatsapp.com",
-                instagram: "https://instagram.com"
-            }
+        // Base de datos global ampliada simulada (Patagonia Norte y Sur)
+        let masterDatabase = [
+            { id: 1, title: "Cabañas & Domos Queulat", category: "Turismo y Aventura", lat: -44.4000, lng: -72.5000, desc: "Hospedaje inmerso en la Patagonia norte. Cerca del ventisquero.", image: "https://images.unsplash.com/photo-1587061949409-02df41d5e562?auto=format&fit=crop&q=80&w=600", whatsapp: "https://whatsapp.com", instagram: "https://instagram.com" },
+            { id: 2, title: "The Retro Burger Bar", category: "Gastronomía", lat: -44.5742, lng: -72.9902, desc: "Disfruta la mejor hamburguesa artesanal en Puerto Cisnes con 20% dcto.", image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600", whatsapp: "https://whatsapp.com", instagram: "https://instagram.com" },
+            { id: 3, title: "Excursiones Náuticas Ventisquero", category: "Turismo y Aventura", lat: -44.4500, lng: -72.5500, desc: "Navegación guiada hacia el Glaciar Colgante.", image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=600", whatsapp: "https://whatsapp.com", instagram: "https://instagram.com" },
+            { id: 4, title: "Hospedaje La Junta Rural", category: "Turismo y Aventura", lat: -43.9500, lng: -72.9800, desc: "Refugio norteño en Carretera Austral.", image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=600", whatsapp: "https://whatsapp.com", instagram: "https://instagram.com" },
+            { id: 5, title: "Hotel Coyhaique Central", category: "Turismo y Aventura", lat: -45.5752, lng: -72.0662, desc: "Confort urbano antes de adentrarse en la ruta austral.", image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=600", whatsapp: "https://whatsapp.com", instagram: "https://instagram.com" }
         ];
 
+        let mockData = [];
         let favorites = [];
         let currentIndex = 0;
         let mapInitialized = false;
         let mapInstance = null;
         let userMarker = null;
+        let radiusCircles = [];
 
-        // Coordenadas de respaldo por defecto (Puerto Cisnes, Patagonia Aysén)
-        let currentLat = -44.5742;
-        let currentLng = -72.9902;
+        // Fórmula de Haversine para calcular distancia real en km
+        function calcularDistanciaKm(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radio de la Tierra en km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        // ALGORITMO PRINCIPAL: Búsqueda GPS + Ampliación 100km + Pre-caché Offline
+        function sincronizarRadio100km(latCentro, lngCentro) {
+            console.log(`🔍 Ejecutando algoritmo Gnews: Buscando en radio de 100 km desde (${latCentro}, ${lngCentro})`);
+            
+            let resultadosEnRango = [];
+
+            masterDatabase.forEach(item => {
+                let distancia = calcularDistanciaKm(latCentro, lngCentro, item.lat, item.lng);
+                if (distancia <= 100) {
+                    item.distanciaCalculada = `📍 a ${distancia.toFixed(1)} km`;
+                    resultadosEnRango.push(item);
+                }
+            });
+
+            // Si por algún motivo está muy aislado y encuentra menos de 2, asegura el más cercano
+            if (resultadosEnRango.length === 0) {
+                resultadosEnRango.push(masterDatabase[0]);
+            }
+
+            mockData = resultadosEnRango;
+            currentIndex = 0;
+
+            // PRE-CACHÉ SILENCIOSO: Guardar en almacenamiento interno para uso offline sin señal
+            localStorage.setItem('gnews_offline_cache_100km', JSON.stringify(mockData));
+            console.log(`💾 Pre-caché offline actualizada: ${mockData.length} prestadores guardados en el dispositivo.`);
+
+            renderizarCacheOfflineEnSeccionRutas();
+            updateCardDisplay();
+        }
+
+        function renderizarCacheOfflineEnSeccionRutas() {
+            const contenedor = document.getElementById('offline-cache-list');
+            const cacheGuardada = JSON.parse(localStorage.getItem('gnews_offline_cache_100km') || '[]');
+
+            if(cacheGuardada.length === 0) return;
+
+            contenedor.innerHTML = cacheGuardada.map(item => `
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-3 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
+                    <img src="${item.image}" class="w-12 h-12 rounded-lg object-cover shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <span class="text-[9px] bg-green-50 text-green-600 px-2 py-0.5 rounded-full font-semibold"><i class="fa-solid fa-check mr-1"></i>Guardado en Caché Offline</span>
+                        <h3 class="text-xs font-bold text-gray-800 truncate mt-0.5">${item.title}</h3>
+                        <p class="text-[10px] text-gray-500 truncate">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Búsqueda manual por barra de texto
+        function ejecutarBusquedaConRadio100km() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            if(!query) {
+                initRealGPSAndSync();
+                return;
+            }
+
+            // Buscar coincidencia en la base de datos para usar sus coordenadas como centro
+            let encontrado = masterDatabase.find(i => i.title.toLowerCase().includes(query) || i.category.toLowerCase().includes(query));
+            if(encontrado) {
+                sincronizarRadio100km(encontrado.lat, encontrado.lng);
+                alert(`🎯 Ubicación "${encontrado.title}" encontrada. Se amplió el radio de búsqueda 100 km a la redonda y se guardó en caché offline.`);
+            } else {
+                alert('Localidad o servicio no encontrado en la base regional. Usando GPS actual.');
+            }
+        }
 
         function updateCardDisplay() {
             if (mockData.length === 0) return;
             const item = mockData[currentIndex];
             document.getElementById('card-title').innerText = item.title;
             document.getElementById('card-category').innerText = item.category;
-            document.getElementById('card-distance').innerText = item.distance;
+            document.getElementById('card-distance').innerText = item.distanciaCalculada || "📍 a 1.2 km";
             document.getElementById('card-desc').innerText = item.desc;
             document.getElementById('card-image').src = item.image;
             document.getElementById('card-whatsapp').href = item.whatsapp || 'https://whatsapp.com';
@@ -287,7 +322,6 @@
 
         function nextCard(action) {
             const card = document.getElementById('card');
-            
             if (action === 'match') {
                 const currentItem = mockData[currentIndex];
                 if (!favorites.some(fav => fav.title === currentItem.title)) {
@@ -310,15 +344,7 @@
 
         function renderFavorites() {
             const listContainer = document.getElementById('matches-list');
-            if (favorites.length === 0) {
-                listContainer.innerHTML = `
-                    <div id="empty-matches" class="text-center py-12 text-gray-400">
-                        <i class="fa-solid fa-heart-crack text-4xl mb-2"></i>
-                        <p class="text-sm">Aún no tienes favoritos. ¡Explora el feed y haz match!</p>
-                    </div>`;
-                return;
-            }
-
+            if (favorites.length === 0) return;
             listContainer.innerHTML = favorites.map(item => `
                 <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm flex gap-3 items-center">
                     <img src="${item.image}" class="w-16 h-16 rounded-lg object-cover shrink-0">
@@ -326,10 +352,6 @@
                         <span class="text-[9px] bg-orange-50 text-orange-600 px-2 py-0.5 rounded-full font-semibold">${item.category}</span>
                         <h4 class="text-sm font-bold text-gray-800 truncate mt-1">${item.title}</h4>
                         <p class="text-xs text-gray-500 truncate">${item.desc}</p>
-                    </div>
-                    <div class="flex flex-col gap-1 shrink-0">
-                        <a href="${item.whatsapp || '#'}" target="_blank" class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-xs hover:bg-green-100 transition"><i class="fa-brands fa-whatsapp"></i></a>
-                        <a href="${item.instagram || '#'}" target="_blank" class="w-8 h-8 rounded-full bg-pink-50 text-pink-600 flex items-center justify-center text-xs hover:bg-pink-100 transition"><i class="fa-brands fa-instagram"></i></a>
                     </div>
                 </div>
             `).join('');
@@ -343,71 +365,82 @@
             });
 
             document.getElementById('view-' + viewName).classList.add('active');
-            
             const activeNav = document.getElementById('nav-' + viewName);
             if(activeNav) activeNav.style.color = '#f37021';
 
             if (viewName === 'map') {
                 setTimeout(() => {
                     if (!mapInitialized) {
-                        mapInstance = L.map('map').setView([currentLat, currentLng], 13);
-                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                            maxZoom: 19,
-                            attribution: '&copy; OpenStreetMap'
-                        }).addTo(mapInstance);
+                        mapInstance = L.map('map').setView([-44.5742, -72.9902], 10);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapInstance);
                         mapInitialized = true;
                     }
-                    initRealGPS();
+                    initRealGPSAndSync();
                 }, 200);
             }
         }
 
-        // Conexión con el Sensor GPS Real del Dispositivo
-        function initRealGPS() {
+        // Obtener GPS real y disparar sincronización de 100km
+        function initRealGPSAndSync() {
             const statusEl = document.getElementById('gps-status');
             const coordsEl = document.getElementById('gps-coords');
 
             if (!navigator.geolocation) {
                 statusEl.innerText = "GPS no compatible";
-                coordsEl.innerText = "Tu navegador no soporta geolocalización";
+                sincronizarRadio100km(-44.5742, -72.9902); // Fallback Puerto Cisnes
                 return;
             }
 
             statusEl.innerText = "Buscando satélites GPS...";
-            coordsEl.innerText = "Solicitando permiso de ubicación...";
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    currentLat = position.coords.latitude;
-                    currentLng = position.coords.longitude;
-                    const accuracy = Math.round(position.coords.accuracy);
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
 
-                    statusEl.innerText = "GPS Conectado (Precisión: " + accuracy + "m)";
-                    coordsEl.innerText = `Lat: ${currentLat.toFixed(4)}, Lng: ${currentLng.toFixed(4)}`;
+                    statusEl.innerText = "GPS Conectado (Radio 100km activo)";
+                    coordsEl.innerText = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
 
                     if (mapInstance) {
-                        mapInstance.setView([currentLat, currentLng], 14);
-                        
+                        mapInstance.setView([lat, lng], 11);
                         if (userMarker) {
-                            userMarker.setLatLng([currentLat, currentLng]);
+                            userMarker.setLatLng([lat, lng]);
                         } else {
-                            userMarker = L.marker([currentLat, currentLng]).addTo(mapInstance)
+                            userMarker = L.marker([lat, lng]).addTo(mapInstance)
                                 .bindPopup('<b>📍 Tu Ubicación GPS Real</b>').openPopup();
                         }
 
-                        // Agregar marcador de comercio cercano de prueba respecto al usuario
-                        L.marker([currentLat + 0.003, currentLng + 0.003]).addTo(mapInstance)
-                            .bindPopup('<b>Prestador Local Patagónico</b><br>Servicio verificado en ruta');
+                        // Dibujar círculo de radio de 100 km en el mapa
+                        radiusCircles.forEach(c => mapInstance.removeLayer(c));
+                        let circle = L.circle([lat, lng], {
+                            color: '#f37021',
+                            fillColor: '#f37021',
+                            fillOpacity: 0.1,
+                            radius: 100000 // 100 km en metros
+                        }).addTo(mapInstance);
+                        radiusCircles.push(circle);
+
+                        // Agregar pines de los resultados en rango
+                        mockData.forEach(item => {
+                            L.marker([item.lat, item.lng]).addTo(mapInstance)
+                                .bindPopup(`<b>${item.title}</b><br>${item.category}`);
+                        });
                     }
+
+                    sincronizarRadio100km(lat, lng);
                 },
                 (error) => {
-                    console.warn("Error GPS:", error.message);
-                    statusEl.innerText = "Usando ubicación de respaldo";
-                    coordsEl.innerText = "Patagonia Norte (Puerto Cisnes por defecto)";
-
-                    if (mapInstance && !userMarker) {
-                        userMarker = L.marker([currentLat, currentLng]).addTo(mapInstance)
-                            .bindPopup('<b>📍 Ubicación Simulada (Sin permiso GPS)</b>').openPopup();
+                    statusEl.innerText = "Modo Offline (Usando última caché)";
+                    coordsEl.innerText = "Sin señal GPS directa - Cargando datos locales";
+                    
+                    // Cargar desde caché local si falla el GPS
+                    let cacheOffline = JSON.parse(localStorage.getItem('gnews_offline_cache_100km') || '[]');
+                    if(cacheOffline.length > 0) {
+                        mockData = cacheOffline;
+                        updateCardDisplay();
+                        renderizarCacheOfflineEnSeccionRutas();
+                    } else {
+                        sincronizarRadio100km(-44.5742, -72.9902);
                     }
                 },
                 { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
@@ -416,28 +449,28 @@
 
         function handleCreatorSubmit(event) {
             event.preventDefault();
-            
             const newAd = {
+                id: masterDatabase.length + 1,
                 title: document.getElementById('new-title').value,
                 category: document.getElementById('new-category').value,
-                distance: "📍 a 0.2 km (Cerca de ti)",
+                lat: -44.5742, 
+                lng: -72.9902,
                 desc: document.getElementById('new-desc').value,
                 image: document.getElementById('new-image').value,
                 whatsapp: "https://whatsapp.com",
                 instagram: "https://instagram.com"
             };
 
-            mockData.unshift(newAd);
-            currentIndex = 0;
-            updateCardDisplay();
+            masterDatabase.unshift(newAd);
+            sincronizarRadio100km(-44.5742, -72.9902);
 
-            alert('¡Anuncio publicado con éxito! Posicionado en el radar de tu ubicación actual.');
+            alert('¡Anuncio publicado y agregado al radio offline de 100km!');
             event.target.reset();
             switchView('explore');
         }
 
-        // Inicializar
-        updateCardDisplay();
+        // Inicialización al cargar la página
+        sincronizarRadio100km(-44.5742, -72.9902);
     </script>
 </body>
 </html>
