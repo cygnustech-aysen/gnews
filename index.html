@@ -108,15 +108,15 @@
             </div>
         </div>
 
-        <!-- ==================== VISTA 3: MAPA GPS ==================== -->
+        <!-- ==================== VISTA 3: MAPA GPS REAL ==================== -->
         <div id="view-map" class="view-section bg-gray-50 relative">
             <div id="map"></div>
             <div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-3 rounded-xl shadow-lg z-[1000] border border-gray-200 flex items-center justify-between">
                 <div>
-                    <h4 class="text-xs font-bold text-gray-800 uppercase">GPS Activo en Región</h4>
-                    <p class="text-xs text-gray-500">Mostrando servicios cercanos</p>
+                    <h4 class="text-xs font-bold text-gray-800 uppercase" id="gps-status">Conectando con GPS...</h4>
+                    <p class="text-xs text-gray-500" id="gps-coords">Obteniendo ubicación satelital</p>
                 </div>
-                <button onclick="alert('Actualizando radares GPS...')" class="px-3 py-1.5 rounded-lg text-white text-xs font-bold cursor-pointer" style="background-color: #f37021;">Actualizar</button>
+                <button onclick="initRealGPS()" class="px-3 py-1.5 rounded-lg text-white text-xs font-bold cursor-pointer" style="background-color: #f37021;">Reintentar</button>
             </div>
         </div>
 
@@ -231,7 +231,7 @@
         </nav>
     </div>
 
-    <!-- Script de Funcionalidad Total -->
+    <!-- Script con GPS Real y Conexión de Sensores -->
     <script>
         let mockData = [
             {
@@ -267,6 +267,11 @@
         let currentIndex = 0;
         let mapInitialized = false;
         let mapInstance = null;
+        let userMarker = null;
+
+        // Coordenadas de respaldo por defecto (Puerto Cisnes, Patagonia Aysén)
+        let currentLat = -44.5742;
+        let currentLng = -72.9902;
 
         function updateCardDisplay() {
             if (mockData.length === 0) return;
@@ -342,25 +347,71 @@
             const activeNav = document.getElementById('nav-' + viewName);
             if(activeNav) activeNav.style.color = '#f37021';
 
-            if (viewName === 'map' && !mapInitialized) {
+            if (viewName === 'map') {
                 setTimeout(() => {
-                    mapInstance = L.map('map').setView([-44.5742, -72.9902], 13); // Coordenadas de Puerto Cisnes / Aysén
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        maxZoom: 19,
-                        attribution: '&copy; OpenStreetMap'
-                    }).addTo(mapInstance);
-
-                    L.marker([-44.5742, -72.9902]).addTo(mapInstance)
-                        .bindPopup('<b>Tu Ubicación GPS (Patagonia)</b>').openPopup();
-
-                    L.marker([-44.5780, -72.9850]).addTo(mapInstance)
-                        .bindPopup('<b>Cabañas Queulat</b><br>🏔️ Disponible Offline');
-
-                    mapInitialized = true;
+                    if (!mapInitialized) {
+                        mapInstance = L.map('map').setView([currentLat, currentLng], 13);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            maxZoom: 19,
+                            attribution: '&copy; OpenStreetMap'
+                        }).addTo(mapInstance);
+                        mapInitialized = true;
+                    }
+                    initRealGPS();
                 }, 200);
-            } else if (viewName === 'map' && mapInitialized) {
-                setTimeout(() => { mapInstance.invalidateSize(); }, 150);
             }
+        }
+
+        // Conexión con el Sensor GPS Real del Dispositivo
+        function initRealGPS() {
+            const statusEl = document.getElementById('gps-status');
+            const coordsEl = document.getElementById('gps-coords');
+
+            if (!navigator.geolocation) {
+                statusEl.innerText = "GPS no compatible";
+                coordsEl.innerText = "Tu navegador no soporta geolocalización";
+                return;
+            }
+
+            statusEl.innerText = "Buscando satélites GPS...";
+            coordsEl.innerText = "Solicitando permiso de ubicación...";
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    currentLat = position.coords.latitude;
+                    currentLng = position.coords.longitude;
+                    const accuracy = Math.round(position.coords.accuracy);
+
+                    statusEl.innerText = "GPS Conectado (Precisión: " + accuracy + "m)";
+                    coordsEl.innerText = `Lat: ${currentLat.toFixed(4)}, Lng: ${currentLng.toFixed(4)}`;
+
+                    if (mapInstance) {
+                        mapInstance.setView([currentLat, currentLng], 14);
+                        
+                        if (userMarker) {
+                            userMarker.setLatLng([currentLat, currentLng]);
+                        } else {
+                            userMarker = L.marker([currentLat, currentLng]).addTo(mapInstance)
+                                .bindPopup('<b>📍 Tu Ubicación GPS Real</b>').openPopup();
+                        }
+
+                        // Agregar marcador de comercio cercano de prueba respecto al usuario
+                        L.marker([currentLat + 0.003, currentLng + 0.003]).addTo(mapInstance)
+                            .bindPopup('<b>Prestador Local Patagónico</b><br>Servicio verificado en ruta');
+                    }
+                },
+                (error) => {
+                    console.warn("Error GPS:", error.message);
+                    statusEl.innerText = "Usando ubicación de respaldo";
+                    coordsEl.innerText = "Patagonia Norte (Puerto Cisnes por defecto)";
+
+                    if (mapInstance && !userMarker) {
+                        userMarker = L.marker([currentLat, currentLng]).addTo(mapInstance)
+                            .bindPopup('<b>📍 Ubicación Simulada (Sin permiso GPS)</b>').openPopup();
+                    }
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
         }
 
         function handleCreatorSubmit(event) {
@@ -369,7 +420,7 @@
             const newAd = {
                 title: document.getElementById('new-title').value,
                 category: document.getElementById('new-category').value,
-                distance: "📍 a 0.5 km",
+                distance: "📍 a 0.2 km (Cerca de ti)",
                 desc: document.getElementById('new-desc').value,
                 image: document.getElementById('new-image').value,
                 whatsapp: "https://whatsapp.com",
@@ -380,12 +431,12 @@
             currentIndex = 0;
             updateCardDisplay();
 
-            alert('¡Anuncio publicado con éxito! Ya se encuentra visible en el feed principal.');
+            alert('¡Anuncio publicado con éxito! Posicionado en el radar de tu ubicación actual.');
             event.target.reset();
             switchView('explore');
         }
 
-        // Inicializar tarjeta inicial al cargar
+        // Inicializar
         updateCardDisplay();
     </script>
 </body>
