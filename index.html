@@ -92,12 +92,12 @@
                 <i class="fa-solid fa-satellite-dish text-blue-500 mt-1 text-lg"></i>
                 <div>
                     <h4 class="text-xs font-bold text-blue-900">Caché Offline Sincronizada</h4>
-                    <p class="text-[10px] text-blue-700 mt-1 leading-relaxed">Aquí se listan todos los alojamientos y servicios públicos o creados por usuarios guardados en un radio de 100 km disponibles sin internet.</p>
+                    <p class="text-[10px] text-blue-700 mt-1 leading-relaxed">Alojamientos y servicios creados disponibles en un radio de 100 km para consultar sin conexión.</p>
                 </div>
             </div>
 
             <div id="offline-cache-list" class="space-y-3">
-                <!-- Se llena dinámicamente con la caché -->
+                <!-- Se llena dinámicamente -->
             </div>
         </div>
 
@@ -136,18 +136,15 @@
             </div>
         </div>
 
-        <!-- ==================== VISTA 5: FAVORITOS / MATCHES ==================== -->
+        <!-- ==================== VISTA 5: FAVORITOS / MATCHES PERSISTENTES ==================== -->
         <div id="view-matches" class="view-section bg-gray-50 p-6 overflow-y-auto">
             <div class="mb-4">
                 <h2 class="text-xl font-bold text-gray-900">Mis Favoritos</h2>
-                <p class="text-xs text-gray-500 mt-0.5">Servicios y eventos con Match ❤️</p>
+                <p class="text-xs text-gray-500 mt-0.5">Servicios y eventos con Match ❤️ (Guardados)</p>
             </div>
             
             <div id="matches-list" class="space-y-3">
-                <div id="empty-matches" class="text-center py-12 text-gray-400">
-                    <i class="fa-solid fa-heart-crack text-4xl mb-2"></i>
-                    <p class="text-sm">Aún no tienes favoritos. ¡Explora el feed y haz match!</p>
-                </div>
+                <!-- Se llena dinámicamente desde localStorage -->
             </div>
         </div>
 
@@ -222,18 +219,18 @@
         </nav>
     </div>
 
-    <!-- Script con Persistencia Persistente LocalStorage para Creadores y Offline -->
+    <!-- Script con Sincronización y Persistencia Completa LocalStorage -->
     <script>
-        // Cargar base de datos maestra inicial o desde localStorage si ya existen publicaciones previas
         let initialMasterDB = [
             { id: 1, title: "Cabañas & Domos Queulat", category: "Turismo y Aventura", lat: -44.4000, lng: -72.5000, desc: "Hospedaje inmerso en la Patagonia norte. Cerca del ventisquero.", image: "https://images.unsplash.com/photo-1587061949409-02df41d5e562?auto=format&fit=crop&q=80&w=600", whatsapp: "https://whatsapp.com", instagram: "https://instagram.com" },
             { id: 2, title: "The Retro Burger Bar", category: "Gastronomía", lat: -44.5742, lng: -72.9902, desc: "Disfruta la mejor hamburguesa artesanal en Puerto Cisnes con 20% dcto.", image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600", whatsapp: "https://whatsapp.com", instagram: "https://instagram.com" }
         ];
 
+        // Cargar Base Maestra y Favoritos de forma persistente desde localStorage
         let masterDatabase = JSON.parse(localStorage.getItem('gnews_master_database') || JSON.stringify(initialMasterDB));
+        let favorites = JSON.parse(localStorage.getItem('gnews_favorites_database') || '[]');
 
         let mockData = [];
-        let favorites = [];
         let currentIndex = 0;
         let mapInitialized = false;
         let mapInstance = null;
@@ -270,9 +267,9 @@
             mockData = resultadosEnRango;
             currentIndex = 0;
 
-            // Guardar caché offline permanente
             localStorage.setItem('gnews_offline_cache_100km', JSON.stringify(mockData));
             renderizarCacheOfflineEnSeccionRutas();
+            renderFavorites(); // Renderizar favoritos guardados al sincronizar
             updateCardDisplay();
         }
 
@@ -333,6 +330,8 @@
                 const currentItem = mockData[currentIndex];
                 if (!favorites.some(fav => fav.title === currentItem.title)) {
                     favorites.push(currentItem);
+                    // Persistencia automática de favoritos
+                    localStorage.setItem('gnews_favorites_database', JSON.stringify(favorites));
                     renderFavorites();
                 }
                 card.style.transform = 'translateX(100px) rotate(15deg)';
@@ -351,7 +350,15 @@
 
         function renderFavorites() {
             const listContainer = document.getElementById('matches-list');
-            if (favorites.length === 0) return;
+            if (!favorites || favorites.length === 0) {
+                listContainer.innerHTML = `
+                    <div id="empty-matches" class="text-center py-12 text-gray-400">
+                        <i class="fa-solid fa-heart-crack text-4xl mb-2"></i>
+                        <p class="text-sm">Aún no tienes favoritos. ¡Explora el feed y haz match!</p>
+                    </div>`;
+                return;
+            }
+
             listContainer.innerHTML = favorites.map(item => `
                 <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm flex gap-3 items-center">
                     <img src="${item.image}" class="w-16 h-16 rounded-lg object-cover shrink-0">
@@ -359,6 +366,11 @@
                         <span class="text-[9px] bg-orange-50 text-orange-600 px-2 py-0.5 rounded-full font-semibold">${item.category}</span>
                         <h4 class="text-sm font-bold text-gray-800 truncate mt-1">${item.title}</h4>
                         <p class="text-xs text-gray-500 truncate">${item.desc}</p>
+                        <span class="text-[9px] text-gray-400 mt-0.5 block">📍 ${item.lat ? item.lat.toFixed(4) : '-44.5742'}, ${item.lng ? item.lng.toFixed(4) : '-72.9902'}</span>
+                    </div>
+                    <div class="flex flex-col gap-1 shrink-0">
+                        <a href="${item.whatsapp || '#'}" target="_blank" class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-xs hover:bg-green-100 transition"><i class="fa-brands fa-whatsapp"></i></a>
+                        <a href="${item.instagram || '#'}" target="_blank" class="w-8 h-8 rounded-full bg-pink-50 text-pink-600 flex items-center justify-center text-xs hover:bg-pink-100 transition"><i class="fa-brands fa-instagram"></i></a>
                     </div>
                 </div>
             `).join('');
@@ -444,7 +456,6 @@
                         }).addTo(mapInstance);
                         radiusCircles.push(circle);
 
-                        // Limpiar marcadores anteriores de la base de datos
                         mapMarkers.forEach(m => mapInstance.removeLayer(m));
                         mapMarkers = [];
 
@@ -502,20 +513,20 @@
                 instagram: "https://instagram.com"
             };
 
-            // Inyectar en la base de datos maestra y guardar en localStorage de forma persistente
+            // Inyectar en base de datos maestra y guardar permanentemente
             masterDatabase.unshift(newAd);
             localStorage.setItem('gnews_master_database', JSON.stringify(masterDatabase));
 
-            // Sincronizar el radio de 100km para que aparezca de inmediato en online y offline
             sincronizarRadio100km(lat, lng);
 
-            alert('¡Anuncio publicado, geolocalizado y guardado permanentemente para uso offline!');
+            alert('¡Anuncio publicado, geolocalizado y guardado permanentemente para uso online y offline!');
             event.target.reset();
             switchView('explore');
         }
 
-        // Inicialización
+        // Inicialización al cargar la aplicación
         sincronizarRadio100km(-44.5742, -72.9902);
+        renderFavorites();
     </script>
 </body>
 </html>
