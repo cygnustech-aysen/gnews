@@ -23,23 +23,19 @@
     <!-- Contenedor Principal tipo Smartphone -->
     <div class="w-full max-w-md h-full md:h-[850px] md:rounded-3xl bg-white shadow-2xl flex flex-col overflow-hidden relative border border-gray-200">
         
-        <!-- HEADER (Ahora incluye el botón de Crear Anuncio) -->
+        <!-- HEADER -->
         <header class="bg-white border-b border-gray-100 px-6 py-4 flex justify-between items-center z-10 shrink-0">
             <div class="flex items-center">
                 <span class="text-2xl font-black tracking-tighter" style="color: #f37021;">G<span class="text-gray-700">NEWS</span></span>
             </div>
-            <div class="flex items-center space-x-4">
-                <!-- Botón Crear movido arriba para mejor UX -->
-                <button onclick="switchView('create')" id="nav-create" class="text-gray-400 hover:text-orange-500 transition cursor-pointer flex items-center">
-                    <i class="fa-solid fa-circle-plus text-xl"></i>
+            <div class="flex items-center space-x-3">
+                <button onclick="switchView('create')" class="text-xs bg-orange-50 text-orange-600 px-3 py-1.5 rounded-full font-bold flex items-center shadow-sm hover:bg-orange-100 transition cursor-pointer">
+                    <i class="fa-solid fa-circle-plus mr-1.5"></i> Crear Anuncio
                 </button>
-                <span class="text-[10px] bg-orange-50 text-orange-600 px-2.5 py-1.5 rounded-full font-bold flex items-center shadow-sm">
-                    <i class="fa-solid fa-location-dot mr-1"></i> GPS Activo
-                </span>
             </div>
         </header>
 
-        <!-- ==================== VISTA 1: EXPLORAR / FEED ==================== -->
+        <!-- ==================== VISTA 1: EXPLORAR / FEED TINDER ==================== -->
         <div id="view-explore" class="view-section active bg-gray-50 p-4 items-center justify-center">
             <div id="card" class="w-full h-full max-h-[530px] bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col relative border border-gray-200 transition-all duration-300">
                 <div class="relative h-3/5 w-full bg-gray-200">
@@ -65,6 +61,7 @@
                 </div>
             </div>
 
+            <!-- Botones de Acción (Match / Swipe) -->
             <div class="flex items-center justify-center space-x-6 mt-3 z-10 shrink-0">
                 <button onclick="nextCard('reject')" class="w-12 h-12 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center text-gray-400 hover:text-orange-500 hover:border-orange-200 transition active:scale-95 cursor-pointer">
                     <i class="fa-solid fa-xmark text-xl"></i>
@@ -75,58 +72,38 @@
             </div>
         </div>
 
-        <!-- ==================== VISTA 2: RUTAS Y OFFLINE (NUEVA) ==================== -->
+        <!-- ==================== VISTA 2: RUTAS OFFLINE (Ruta 7 Patagonia) ==================== -->
         <div id="view-routes" class="view-section bg-gray-50 p-6 overflow-y-auto">
             <div class="mb-4">
                 <h2 class="text-xl font-bold text-gray-900">Rutas de la Patagonia</h2>
-                <p class="text-xs text-gray-500 mt-0.5">Descarga mapas y eventos para navegar sin señal.</p>
+                <p class="text-xs text-gray-500 mt-0.5">Mapas offline para tramos sin señal en la Ruta 7.</p>
             </div>
 
-            <!-- Banner Explicativo Offline -->
-            <div class="bg-blue-50 border border-blue-200 rounded-xl p-3.5 mb-5 flex items-start gap-3 shadow-sm">
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-3.5 mb-4 flex items-start gap-3 shadow-sm">
                 <i class="fa-solid fa-satellite-dish text-blue-500 mt-1 text-lg"></i>
                 <div>
-                    <h4 class="text-xs font-bold text-blue-900">Tu GPS funciona sin internet</h4>
-                    <p class="text-[10px] text-blue-700 mt-1 leading-relaxed">Descarga un tramo de la Ruta 7. Gnews te guiará y mostrará atractivos, cabañas y emergencias aunque pierdas la señal móvil.</p>
+                    <h4 class="text-xs font-bold text-blue-900">Navegación GPS sin Internet</h4>
+                    <p class="text-[10px] text-blue-700 mt-1 leading-relaxed">Descarga los tramos antes de viajar. Tu GPS te guiará y mostrará servicios locales y de emergencia sin cobertura.</p>
                 </div>
             </div>
 
             <div class="space-y-3">
-                <!-- Paquete Descargado -->
                 <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-2 relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
-                    <div class="flex justify-between items-start pl-2">
-                        <div>
-                            <span class="text-[9px] bg-green-50 text-green-600 px-2 py-0.5 rounded-full font-semibold"><i class="fa-solid fa-check mr-1"></i>Disponible Offline</span>
-                            <h3 class="text-sm font-bold text-gray-800 mt-1">Ruta 7 Norte (Cisnes - Puyuhuapi)</h3>
-                            <p class="text-[10px] text-gray-500 mt-0.5">Incluye 45 servicios locales, P.N. Queulat y mapa.</p>
-                        </div>
-                    </div>
-                    <button class="w-full mt-2 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-bold transition">Ver Atractivos del Tramo</button>
-                </div>
-
-                <!-- Paquete Por Descargar 1 -->
-                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-2">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <span class="text-[9px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-semibold">Requiere Descarga</span>
-                            <h3 class="text-sm font-bold text-gray-800 mt-1">Ruta 7 Centro (Aysén - Coyhaique)</h3>
-                            <p class="text-[10px] text-gray-500 mt-0.5">28 MB • Hospedajes, talleres y gastronomía.</p>
-                        </div>
-                        <button onclick="alert('Descargando paquete offline de Ruta 7 Centro...')" class="w-10 h-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center hover:bg-orange-100 transition shrink-0"><i class="fa-solid fa-cloud-arrow-down text-lg"></i></button>
+                    <div class="pl-2">
+                        <span class="text-[9px] bg-green-50 text-green-600 px-2 py-0.5 rounded-full font-semibold"><i class="fa-solid fa-check mr-1"></i>Disponible Offline</span>
+                        <h3 class="text-sm font-bold text-gray-800 mt-1">Ruta 7 Norte (Cisnes - Puyuhuapi)</h3>
+                        <p class="text-[10px] text-gray-500 mt-0.5">Incluye 45 servicios locales y P.N. Queulat.</p>
                     </div>
                 </div>
 
-                <!-- Paquete Por Descargar 2 -->
-                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-2">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <span class="text-[9px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-semibold">Requiere Descarga</span>
-                            <h3 class="text-sm font-bold text-gray-800 mt-1">Ruta 7 Sur (C. Castillo - Cochrane)</h3>
-                            <p class="text-[10px] text-gray-500 mt-0.5">42 MB • Glaciares, reservas y guías locales.</p>
-                        </div>
-                        <button onclick="alert('Descargando paquete offline de Ruta 7 Sur...')" class="w-10 h-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center hover:bg-orange-100 transition shrink-0"><i class="fa-solid fa-cloud-arrow-down text-lg"></i></button>
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center p-4">
+                    <div>
+                        <span class="text-[9px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-semibold">Requiere Descarga</span>
+                        <h3 class="text-sm font-bold text-gray-800 mt-1">Ruta 7 Centro (Aysén - Coyhaique)</h3>
+                        <p class="text-[10px] text-gray-500 mt-0.5">28 MB • Hospedajes y gastronomía.</p>
                     </div>
+                    <button onclick="alert('¡Paquete descargado con éxito! Ya puedes navegar este tramo sin señal.')" class="w-10 h-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center hover:bg-orange-100 transition cursor-pointer shrink-0"><i class="fa-solid fa-cloud-arrow-down text-lg"></i></button>
                 </div>
             </div>
         </div>
@@ -136,10 +113,10 @@
             <div id="map"></div>
             <div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-3 rounded-xl shadow-lg z-[1000] border border-gray-200 flex items-center justify-between">
                 <div>
-                    <h4 class="text-xs font-bold text-gray-800 uppercase">Ubicación Actual</h4>
-                    <p class="text-xs text-gray-500">Mostrando servicios a < 3 km</p>
+                    <h4 class="text-xs font-bold text-gray-800 uppercase">GPS Activo en Región</h4>
+                    <p class="text-xs text-gray-500">Mostrando servicios cercanos</p>
                 </div>
-                <button onclick="alert('Actualizando mapa...')" class="px-3 py-1.5 rounded-lg text-white text-xs font-bold" style="background-color: #f37021;">Actualizar</button>
+                <button onclick="alert('Actualizando radares GPS...')" class="px-3 py-1.5 rounded-lg text-white text-xs font-bold cursor-pointer" style="background-color: #f37021;">Actualizar</button>
             </div>
         </div>
 
@@ -147,9 +124,9 @@
         <div id="view-agenda" class="view-section bg-gray-50 p-6 overflow-y-auto">
             <div class="mb-4">
                 <h2 class="text-xl font-bold text-gray-900">Agenda Cultural y Comercial</h2>
-                <p class="text-xs text-gray-500 mt-0.5">Eventos presentes y futuros en tu región.</p>
+                <p class="text-xs text-gray-500 mt-0.5">Eventos presentes y futuros en tu comuna.</p>
             </div>
-            <!-- (Contenido de agenda igual al anterior) -->
+            
             <div class="space-y-3">
                 <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
                     <div class="bg-orange-100 text-orange-600 rounded-xl p-3 text-center shrink-0 w-14">
@@ -161,45 +138,75 @@
                         <h3 class="text-sm font-bold text-gray-800 mt-1">Concierto Jazz al Aire Libre</h3>
                         <p class="text-[10px] text-gray-500 mt-0.5">Plaza Principal • 19:00 hrs</p>
                     </div>
-                    <button class="px-3 py-2 bg-gray-100 hover:bg-orange-50 text-gray-700 hover:text-orange-600 rounded-lg text-xs font-bold transition">Asistiré</button>
+                    <button onclick="alert('¡Asistencia confirmada! Te enviaremos un recordatorio.')" class="px-3 py-2 bg-gray-100 hover:bg-orange-50 text-gray-700 hover:text-orange-600 rounded-lg text-xs font-bold transition cursor-pointer">Asistiré</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
+                    <div class="bg-orange-100 text-orange-600 rounded-xl p-3 text-center shrink-0 w-14">
+                        <span class="block text-xs font-bold uppercase">DOM</span>
+                        <span class="block text-lg font-black">29</span>
+                    </div>
+                    <div class="flex-1">
+                        <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-semibold">Gastronomía</span>
+                        <h3 class="text-sm font-bold text-gray-800 mt-1">Feria de Sabores Patagónicos</h3>
+                        <p class="text-[10px] text-gray-500 mt-0.5">Costanera • 12:00 hrs</p>
+                    </div>
+                    <button onclick="alert('¡Asistencia confirmada! Te enviaremos un recordatorio.')" class="px-3 py-2 bg-gray-100 hover:bg-orange-50 text-gray-700 hover:text-orange-600 rounded-lg text-xs font-bold transition cursor-pointer">Asistiré</button>
                 </div>
             </div>
         </div>
 
-        <!-- ==================== VISTA 5: FAVORITOS ==================== -->
+        <!-- ==================== VISTA 5: FAVORITOS / MATCHES ==================== -->
         <div id="view-matches" class="view-section bg-gray-50 p-6 overflow-y-auto">
             <div class="mb-4">
                 <h2 class="text-xl font-bold text-gray-900">Mis Favoritos</h2>
-                <p class="text-xs text-gray-500 mt-0.5">Servicios y eventos guardados ❤️</p>
+                <p class="text-xs text-gray-500 mt-0.5">Servicios y eventos con Match ❤️</p>
             </div>
+            
             <div id="matches-list" class="space-y-3">
                 <div id="empty-matches" class="text-center py-12 text-gray-400">
                     <i class="fa-solid fa-heart-crack text-4xl mb-2"></i>
-                    <p class="text-sm">Aún no tienes favoritos.</p>
+                    <p class="text-sm">Aún no tienes favoritos. ¡Explora el feed y haz match!</p>
                 </div>
             </div>
         </div>
 
-        <!-- ==================== VISTA 6: CREAR (Formulario) ==================== -->
+        <!-- ==================== VISTA 6: CREAR ANUNCIO ==================== -->
         <div id="view-create" class="view-section bg-gray-50 p-6 overflow-y-auto">
             <div class="mb-4">
-                <h2 class="text-xl font-bold text-gray-900">Nuevo Anuncio</h2>
-                <p class="text-xs text-gray-500 mt-0.5">Sube tu servicio para mostrarlo en Gnews.</p>
+                <h2 class="text-xl font-bold text-gray-900">Nuevo Anuncio o Evento</h2>
+                <p class="text-xs text-gray-500 mt-0.5">Sube tu servicio para mostrarlo en el mapa.</p>
             </div>
+
             <form onsubmit="handleCreatorSubmit(event)" class="space-y-3.5 pb-4">
-                <input type="text" id="new-title" required placeholder="Título del Negocio" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none">
-                <select id="new-category" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none">
-                    <option>Gastronomía</option>
-                    <option>Turismo y Excursiones</option>
-                    <option>Servicios Profesionales</option>
-                </select>
-                <textarea id="new-desc" rows="2" required placeholder="Descripción..." class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none"></textarea>
-                <input type="url" id="new-image" required placeholder="URL Imagen" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none">
-                <button type="submit" class="w-full py-3 rounded-xl text-white font-bold text-sm shadow-lg shadow-orange-500/25 transition mt-2" style="background-color: #f37021;">Publicar</button>
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Título del Negocio o Evento</label>
+                    <input type="text" id="new-title" required placeholder="Ej: Cabañas Río Exploradores" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Categoría</label>
+                    <select id="new-category" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
+                        <option>Turismo y Aventura</option>
+                        <option>Gastronomía</option>
+                        <option>Servicios Profesionales</option>
+                        <option>Eventos Culturales</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Descripción corta u Oferta</label>
+                    <textarea id="new-desc" rows="2" required placeholder="Cuéntale al turista qué ofreces..." class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500"></textarea>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">URL de la Imagen o Afiche</label>
+                    <input type="url" id="new-image" required placeholder="https://images.unsplash.com/..." class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl text-white font-bold text-sm shadow-lg shadow-orange-500/25 transition active:scale-95 mt-2 cursor-pointer" style="background-color: #f37021;">
+                    Publicar en Gnews
+                </button>
             </form>
         </div>
 
-        <!-- ==================== NAVBAR INFERIOR (5 Íconos) ==================== -->
+        <!-- ==================== NAVBAR INFERIOR ==================== -->
         <nav class="bg-white border-t border-gray-100 py-3 px-4 flex justify-around items-center text-gray-400 shrink-0 z-20">
             <button onclick="switchView('explore')" id="nav-explore" class="flex flex-col items-center transition cursor-pointer" style="color: #f37021;">
                 <i class="fa-solid fa-fire text-lg"></i>
@@ -224,11 +231,36 @@
         </nav>
     </div>
 
-    <!-- Script de Funcionalidad -->
+    <!-- Script de Funcionalidad Total -->
     <script>
         let mockData = [
-            { title: "Cabañas Queulat", category: "Turismo", distance: "📍 a 5.2 km", desc: "Hospedaje ecológico a pasos del Parque Nacional. Conexión satelital de emergencia.", image: "https://images.unsplash.com/photo-1587061949409-02df41d5e562?auto=format&fit=crop&q=80&w=600" },
-            { title: "The Retro Burger Bar", category: "Gastronomía", distance: "📍 a 0.8 km", desc: "Disfruta la mejor hamburguesa artesanal en Puerto Cisnes.", image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600" }
+            {
+                title: "Cabañas & Domos Queulat",
+                category: "Turismo y Aventura",
+                distance: "📍 a 3.5 km",
+                desc: "Hospedaje inmerso en la Patagonia norte. Reserva directa y guía de senderos incluidos.",
+                image: "https://images.unsplash.com/photo-1587061949409-02df41d5e562?auto=format&fit=crop&q=80&w=600",
+                whatsapp: "https://whatsapp.com",
+                instagram: "https://instagram.com"
+            },
+            {
+                title: "The Retro Burger Bar",
+                category: "Gastronomía",
+                distance: "📍 a 0.8 km",
+                desc: "Disfruta la mejor hamburguesa artesanal en Puerto Cisnes con 20% dcto.",
+                image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600",
+                whatsapp: "https://whatsapp.com",
+                instagram: "https://instagram.com"
+            },
+            {
+                title: "Excursiones Náuticas Ventisquero",
+                category: "Turismo y Aventura",
+                distance: "📍 a 6.2 km",
+                desc: "Navegación guiada hacia el Glaciar Colgante. Salidas diarias sujetas a clima.",
+                image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=600",
+                whatsapp: "https://whatsapp.com",
+                instagram: "https://instagram.com"
+            }
         ];
 
         let favorites = [];
@@ -237,16 +269,20 @@
         let mapInstance = null;
 
         function updateCardDisplay() {
+            if (mockData.length === 0) return;
             const item = mockData[currentIndex];
             document.getElementById('card-title').innerText = item.title;
             document.getElementById('card-category').innerText = item.category;
             document.getElementById('card-distance').innerText = item.distance;
             document.getElementById('card-desc').innerText = item.desc;
             document.getElementById('card-image').src = item.image;
+            document.getElementById('card-whatsapp').href = item.whatsapp || 'https://whatsapp.com';
+            document.getElementById('card-instagram').href = item.instagram || 'https://instagram.com';
         }
 
         function nextCard(action) {
             const card = document.getElementById('card');
+            
             if (action === 'match') {
                 const currentItem = mockData[currentIndex];
                 if (!favorites.some(fav => fav.title === currentItem.title)) {
@@ -258,6 +294,7 @@
                 card.style.transform = 'translateX(-100px) rotate(-15deg)';
             }
             card.style.opacity = '0';
+
             setTimeout(() => {
                 currentIndex = (currentIndex + 1) % mockData.length;
                 updateCardDisplay();
@@ -268,13 +305,26 @@
 
         function renderFavorites() {
             const listContainer = document.getElementById('matches-list');
-            if (favorites.length === 0) return;
+            if (favorites.length === 0) {
+                listContainer.innerHTML = `
+                    <div id="empty-matches" class="text-center py-12 text-gray-400">
+                        <i class="fa-solid fa-heart-crack text-4xl mb-2"></i>
+                        <p class="text-sm">Aún no tienes favoritos. ¡Explora el feed y haz match!</p>
+                    </div>`;
+                return;
+            }
+
             listContainer.innerHTML = favorites.map(item => `
                 <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm flex gap-3 items-center">
                     <img src="${item.image}" class="w-16 h-16 rounded-lg object-cover shrink-0">
                     <div class="flex-1 min-w-0">
                         <span class="text-[9px] bg-orange-50 text-orange-600 px-2 py-0.5 rounded-full font-semibold">${item.category}</span>
                         <h4 class="text-sm font-bold text-gray-800 truncate mt-1">${item.title}</h4>
+                        <p class="text-xs text-gray-500 truncate">${item.desc}</p>
+                    </div>
+                    <div class="flex flex-col gap-1 shrink-0">
+                        <a href="${item.whatsapp || '#'}" target="_blank" class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-xs hover:bg-green-100 transition"><i class="fa-brands fa-whatsapp"></i></a>
+                        <a href="${item.instagram || '#'}" target="_blank" class="w-8 h-8 rounded-full bg-pink-50 text-pink-600 flex items-center justify-center text-xs hover:bg-pink-100 transition"><i class="fa-brands fa-instagram"></i></a>
                     </div>
                 </div>
             `).join('');
@@ -282,11 +332,10 @@
 
         function switchView(viewName) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            ['explore', 'routes', 'map', 'agenda', 'matches'].forEach(v => {
+            ['explore', 'routes', 'map', 'agenda', 'matches', 'create'].forEach(v => {
                 const navEl = document.getElementById('nav-' + v);
                 if(navEl) navEl.style.color = '#9ca3af';
             });
-            document.getElementById('nav-create').style.color = '#9ca3af';
 
             document.getElementById('view-' + viewName).classList.add('active');
             
@@ -295,8 +344,18 @@
 
             if (viewName === 'map' && !mapInitialized) {
                 setTimeout(() => {
-                    mapInstance = L.map('map').setView([-33.4489, -70.6693], 14);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapInstance);
+                    mapInstance = L.map('map').setView([-44.5742, -72.9902], 13); // Coordenadas de Puerto Cisnes / Aysén
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '&copy; OpenStreetMap'
+                    }).addTo(mapInstance);
+
+                    L.marker([-44.5742, -72.9902]).addTo(mapInstance)
+                        .bindPopup('<b>Tu Ubicación GPS (Patagonia)</b>').openPopup();
+
+                    L.marker([-44.5780, -72.9850]).addTo(mapInstance)
+                        .bindPopup('<b>Cabañas Queulat</b><br>🏔️ Disponible Offline');
+
                     mapInitialized = true;
                 }, 200);
             } else if (viewName === 'map' && mapInitialized) {
@@ -306,11 +365,27 @@
 
         function handleCreatorSubmit(event) {
             event.preventDefault();
-            alert('¡Anuncio publicado con éxito!');
+            
+            const newAd = {
+                title: document.getElementById('new-title').value,
+                category: document.getElementById('new-category').value,
+                distance: "📍 a 0.5 km",
+                desc: document.getElementById('new-desc').value,
+                image: document.getElementById('new-image').value,
+                whatsapp: "https://whatsapp.com",
+                instagram: "https://instagram.com"
+            };
+
+            mockData.unshift(newAd);
+            currentIndex = 0;
+            updateCardDisplay();
+
+            alert('¡Anuncio publicado con éxito! Ya se encuentra visible en el feed principal.');
             event.target.reset();
             switchView('explore');
         }
 
+        // Inicializar tarjeta inicial al cargar
         updateCardDisplay();
     </script>
 </body>
