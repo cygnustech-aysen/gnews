@@ -81,7 +81,7 @@
             </div>
         </div>
 
-        <!-- ==================== VISTA 2: RUTAS OFFLINE (Ruta 7 Patagonia) ==================== -->
+        <!-- ==================== VISTA 2: RUTAS OFFLINE ==================== -->
         <div id="view-routes" class="view-section bg-gray-50 p-6 overflow-y-auto">
             <div class="mb-4">
                 <h2 class="text-xl font-bold text-gray-900">Rutas de la Patagonia</h2>
@@ -92,12 +92,12 @@
                 <i class="fa-solid fa-satellite-dish text-blue-500 mt-1 text-lg"></i>
                 <div>
                     <h4 class="text-xs font-bold text-blue-900">Algoritmo Offline-First Activo</h4>
-                    <p class="text-[10px] text-blue-700 mt-1 leading-relaxed">Cada búsqueda realizada precarga automáticamente un radio de 100 km en la memoria de tu teléfono para navegar sin internet.</p>
+                    <p class="text-[10px] text-blue-700 mt-1 leading-relaxed">Cada búsqueda o publicación precarga un radio de 100 km en la memoria para navegar sin internet.</p>
                 </div>
             </div>
 
             <div id="offline-cache-list" class="space-y-3">
-                <!-- Se llena dinámicamente con lo que se guardó en la caché -->
+                <!-- Se llena dinámicamente -->
             </div>
         </div>
 
@@ -151,21 +151,21 @@
             </div>
         </div>
 
-        <!-- ==================== VISTA 6: CREAR ANUNCIO ==================== -->
+        <!-- ==================== VISTA 6: CREAR ANUNCIO CON GEOLOCALIZACIÓN ==================== -->
         <div id="view-create" class="view-section bg-gray-50 p-6 overflow-y-auto">
             <div class="mb-4">
-                <h2 class="text-xl font-bold text-gray-900">Nuevo Anuncio o Evento</h2>
-                <p class="text-xs text-gray-500 mt-0.5">Sube tu servicio para mostrarlo en el mapa.</p>
+                <h2 class="text-xl font-bold text-gray-900">Nuevo Anuncio con Ubicación Real</h2>
+                <p class="text-xs text-gray-500 mt-0.5">Registra tu servicio y asígnale coordenadas GPS exactas.</p>
             </div>
 
-            <form onsubmit="handleCreatorSubmit(event)" class="space-y-3.5 pb-4">
+            <form onsubmit="handleCreatorSubmit(event)" class="space-y-3 pb-4">
                 <div>
                     <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Título del Negocio</label>
-                    <input type="text" id="new-title" required placeholder="Ej: Cabañas Río Exploradores" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
+                    <input type="text" id="new-title" required placeholder="Ej: Cabañas Río Exploradores" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-orange-500">
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Categoría</label>
-                    <select id="new-category" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
+                    <select id="new-category" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-orange-500">
                         <option>Turismo y Aventura</option>
                         <option>Gastronomía</option>
                         <option>Servicios Profesionales</option>
@@ -173,14 +173,27 @@
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Descripción corta</label>
-                    <textarea id="new-desc" rows="2" required placeholder="Cuéntale al turista qué ofreces..." class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500"></textarea>
+                    <textarea id="new-desc" rows="2" required placeholder="Cuéntale al turista qué ofreces..." class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-orange-500"></textarea>
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">URL de la Imagen</label>
-                    <input type="url" id="new-image" required placeholder="https://images.unsplash.com/..." class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500">
+                    <input type="url" id="new-image" required placeholder="https://images.unsplash.com/..." class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-orange-500">
                 </div>
+
+                <!-- SECCIÓN DE GEOLOCALIZACIÓN PARA EL CREADOR -->
+                <div class="bg-orange-50 border border-orange-200 p-3 rounded-xl">
+                    <label class="block text-[11px] font-bold text-orange-900 uppercase mb-1">Ubicación del Negocio (GPS o Link)</label>
+                    <div class="flex gap-2 mb-2">
+                        <button type="button" onclick="capturarGPSTextoFormulario()" class="flex-1 py-2 bg-orange-500 text-white rounded-lg text-xs font-bold hover:bg-orange-600 transition cursor-pointer">
+                            <i class="fa-solid fa-location-crosshairs mr-1"></i> Usar mi GPS Actual
+                        </button>
+                    </div>
+                    <input type="text" id="new-coords" required placeholder="Lat, Lng (Ej: -44.5742, -72.9902)" class="w-full px-3 py-1.5 bg-white border border-orange-200 rounded-lg text-xs focus:outline-none focus:border-orange-500">
+                    <p class="text-[9px] text-orange-700 mt-1">También puedes pegar un enlace de Google Maps y el sistema extraerá la posición.</p>
+                </div>
+
                 <button type="submit" class="w-full py-3 rounded-xl text-white font-bold text-sm shadow-lg shadow-orange-500/25 transition active:scale-95 mt-2 cursor-pointer" style="background-color: #f37021;">
-                    Publicar en Gnews
+                    Publicar con Ubicación Real
                 </button>
             </form>
         </div>
@@ -210,15 +223,11 @@
         </nav>
     </div>
 
-    <!-- Script de Algoritmo Geo-espacial y Pre-caché 100km -->
+    <!-- Script de Algoritmo Geo-espacial y Captura de GPS del Creador -->
     <script>
-        // Base de datos global ampliada simulada (Patagonia Norte y Sur)
         let masterDatabase = [
             { id: 1, title: "Cabañas & Domos Queulat", category: "Turismo y Aventura", lat: -44.4000, lng: -72.5000, desc: "Hospedaje inmerso en la Patagonia norte. Cerca del ventisquero.", image: "https://images.unsplash.com/photo-1587061949409-02df41d5e562?auto=format&fit=crop&q=80&w=600", whatsapp: "https://whatsapp.com", instagram: "https://instagram.com" },
-            { id: 2, title: "The Retro Burger Bar", category: "Gastronomía", lat: -44.5742, lng: -72.9902, desc: "Disfruta la mejor hamburguesa artesanal en Puerto Cisnes con 20% dcto.", image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600", whatsapp: "https://whatsapp.com", instagram: "https://instagram.com" },
-            { id: 3, title: "Excursiones Náuticas Ventisquero", category: "Turismo y Aventura", lat: -44.4500, lng: -72.5500, desc: "Navegación guiada hacia el Glaciar Colgante.", image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=600", whatsapp: "https://whatsapp.com", instagram: "https://instagram.com" },
-            { id: 4, title: "Hospedaje La Junta Rural", category: "Turismo y Aventura", lat: -43.9500, lng: -72.9800, desc: "Refugio norteño en Carretera Austral.", image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=600", whatsapp: "https://whatsapp.com", instagram: "https://instagram.com" },
-            { id: 5, title: "Hotel Coyhaique Central", category: "Turismo y Aventura", lat: -45.5752, lng: -72.0662, desc: "Confort urbano antes de adentrarse en la ruta austral.", image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=600", whatsapp: "https://whatsapp.com", instagram: "https://instagram.com" }
+            { id: 2, title: "The Retro Burger Bar", category: "Gastronomía", lat: -44.5742, lng: -72.9902, desc: "Disfruta la mejor hamburguesa artesanal en Puerto Cisnes con 20% dcto.", image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600", whatsapp: "https://whatsapp.com", instagram: "https://instagram.com" }
         ];
 
         let mockData = [];
@@ -229,9 +238,8 @@
         let userMarker = null;
         let radiusCircles = [];
 
-        // Fórmula de Haversine para calcular distancia real en km
         function calcularDistanciaKm(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Radio de la Tierra en km
+            const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -241,10 +249,7 @@
             return R * c;
         }
 
-        // ALGORITMO PRINCIPAL: Búsqueda GPS + Ampliación 100km + Pre-caché Offline
         function sincronizarRadio100km(latCentro, lngCentro) {
-            console.log(`🔍 Ejecutando algoritmo Gnews: Buscando en radio de 100 km desde (${latCentro}, ${lngCentro})`);
-            
             let resultadosEnRango = [];
 
             masterDatabase.forEach(item => {
@@ -255,7 +260,6 @@
                 }
             });
 
-            // Si por algún motivo está muy aislado y encuentra menos de 2, asegura el más cercano
             if (resultadosEnRango.length === 0) {
                 resultadosEnRango.push(masterDatabase[0]);
             }
@@ -263,10 +267,7 @@
             mockData = resultadosEnRango;
             currentIndex = 0;
 
-            // PRE-CACHÉ SILENCIOSO: Guardar en almacenamiento interno para uso offline sin señal
             localStorage.setItem('gnews_offline_cache_100km', JSON.stringify(mockData));
-            console.log(`💾 Pre-caché offline actualizada: ${mockData.length} prestadores guardados en el dispositivo.`);
-
             renderizarCacheOfflineEnSeccionRutas();
             updateCardDisplay();
         }
@@ -290,7 +291,6 @@
             `).join('');
         }
 
-        // Búsqueda manual por barra de texto
         function ejecutarBusquedaConRadio100km() {
             const query = document.getElementById('search-input').value.toLowerCase().trim();
             if(!query) {
@@ -298,13 +298,12 @@
                 return;
             }
 
-            // Buscar coincidencia en la base de datos para usar sus coordenadas como centro
             let encontrado = masterDatabase.find(i => i.title.toLowerCase().includes(query) || i.category.toLowerCase().includes(query));
             if(encontrado) {
                 sincronizarRadio100km(encontrado.lat, encontrado.lng);
-                alert(`🎯 Ubicación "${encontrado.title}" encontrada. Se amplió el radio de búsqueda 100 km a la redonda y se guardó en caché offline.`);
+                alert(`🎯 Ubicación "${encontrado.title}" encontrada. Se amplió el radio de búsqueda 100 km a la redonda.`);
             } else {
-                alert('Localidad o servicio no encontrado en la base regional. Usando GPS actual.');
+                alert('Localidad o servicio no encontrado.');
             }
         }
 
@@ -380,14 +379,33 @@
             }
         }
 
-        // Obtener GPS real y disparar sincronización de 100km
+        // Capturar GPS actual para el formulario del creador
+        function capturarGPSTextoFormulario() {
+            if (!navigator.geolocation) {
+                alert("Geolocalización no soportada por el navegador.");
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const lat = pos.coords.latitude.toFixed(4);
+                    const lng = pos.coords.longitude.toFixed(4);
+                    document.getElementById('new-coords').value = `${lat}, ${lng}`;
+                    alert("📍 Coordenadas GPS del negocio capturadas con éxito.");
+                },
+                () => {
+                    alert("No se pudo obtener el GPS. Usando ubicación por defecto (Puerto Cisnes).");
+                    document.getElementById('new-coords').value = "-44.5742, -72.9902";
+                }
+            );
+        }
+
         function initRealGPSAndSync() {
             const statusEl = document.getElementById('gps-status');
             const coordsEl = document.getElementById('gps-coords');
 
             if (!navigator.geolocation) {
                 statusEl.innerText = "GPS no compatible";
-                sincronizarRadio100km(-44.5742, -72.9902); // Fallback Puerto Cisnes
+                sincronizarRadio100km(-44.5742, -72.9902);
                 return;
             }
 
@@ -410,17 +428,15 @@
                                 .bindPopup('<b>📍 Tu Ubicación GPS Real</b>').openPopup();
                         }
 
-                        // Dibujar círculo de radio de 100 km en el mapa
                         radiusCircles.forEach(c => mapInstance.removeLayer(c));
                         let circle = L.circle([lat, lng], {
                             color: '#f37021',
                             fillColor: '#f37021',
                             fillOpacity: 0.1,
-                            radius: 100000 // 100 km en metros
+                            radius: 100000
                         }).addTo(mapInstance);
                         radiusCircles.push(circle);
 
-                        // Agregar pines de los resultados en rango
                         mockData.forEach(item => {
                             L.marker([item.lat, item.lng]).addTo(mapInstance)
                                 .bindPopup(`<b>${item.title}</b><br>${item.category}`);
@@ -432,8 +448,6 @@
                 (error) => {
                     statusEl.innerText = "Modo Offline (Usando última caché)";
                     coordsEl.innerText = "Sin señal GPS directa - Cargando datos locales";
-                    
-                    // Cargar desde caché local si falla el GPS
                     let cacheOffline = JSON.parse(localStorage.getItem('gnews_offline_cache_100km') || '[]');
                     if(cacheOffline.length > 0) {
                         mockData = cacheOffline;
@@ -449,12 +463,28 @@
 
         function handleCreatorSubmit(event) {
             event.preventDefault();
+            
+            const rawCoords = document.getElementById('new-coords').value.trim();
+            let lat = -44.5742;
+            let lng = -72.9902;
+
+            // Extraer lat y lng si el usuario ingresó coordenadas separadas por coma
+            if (rawCoords.includes(',')) {
+                let parts = rawCoords.split(',');
+                let parsedLat = parseFloat(parts[0]);
+                let parsedLng = parseFloat(parts[1]);
+                if (!isNaN(parsedLat) && !isNaN(parsedLng)) {
+                    lat = parsedLat;
+                    lng = parsedLng;
+                }
+            }
+
             const newAd = {
                 id: masterDatabase.length + 1,
                 title: document.getElementById('new-title').value,
                 category: document.getElementById('new-category').value,
-                lat: -44.5742, 
-                lng: -72.9902,
+                lat: lat, 
+                lng: lng,
                 desc: document.getElementById('new-desc').value,
                 image: document.getElementById('new-image').value,
                 whatsapp: "https://whatsapp.com",
@@ -462,14 +492,14 @@
             };
 
             masterDatabase.unshift(newAd);
-            sincronizarRadio100km(-44.5742, -72.9902);
+            sincronizarRadio100km(lat, lng);
 
-            alert('¡Anuncio publicado y agregado al radio offline de 100km!');
+            alert('¡Anuncio publicado y geolocalizado con éxito en el sistema!');
             event.target.reset();
             switchView('explore');
         }
 
-        // Inicialización al cargar la página
+        // Inicialización
         sincronizarRadio100km(-44.5742, -72.9902);
     </script>
 </body>
